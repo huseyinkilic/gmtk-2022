@@ -15,10 +15,14 @@ public class CreatureController : MonoBehaviour
         public int[] allowedMoves;
     }
 
-    public CreatureDefinition definition;
-    public int currentDamage;
+    public struct CreatureState
+    {
+        public int currentDamage;
+        public bool isActiveCreature;
+    }
 
-    public bool isActiveCreature;
+    public CreatureDefinition definition;
+    public CreatureState state;
     
 
     public bool IsValidSwitchIn()
