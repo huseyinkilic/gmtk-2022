@@ -104,10 +104,32 @@ public class TurnManager : MonoBehaviour
             else
             {
                 // take move
+
             }
         }
 
         CopyStateToStack();
+    }
+
+    // this function implements the whole luck mechanic
+    public bool MakeRoll(float positiveOutcomeChance, int team)
+    {
+        bool success = false;
+        float relative = team == 0 ? 1 : -1;
+        float negativeOutcomeChance = (1-positiveOutcomeChance);
+
+        // first, make a roll against the luck. if this succeeds, then the roll as a whole is considered successful
+        if (Random.value < relative*currentState.luckBalance) success = true;
+
+        // if the luck roll failed, roll against positiveOutcomeChance, if this succeeds, then the roll as a whole is considered successful
+        if (Random.value < positiveOutcomeChance) success = true;
+
+        // now influence the luck - if the roll succeeded, sway the luck in favor of the opposing team by (1-positiveOutcomeChance)
+        // if the roll failed, sway the luck in favor of this team by positiveOutcomeChance
+        if (success) currentState.luckBalance -= relative*negativeOutcomeChance; // sway the luck in favor of the opposing team by the chance of thier desired outcome (which did not happen)
+        else         currentState.luckBalance += relative*positiveOutcomeChance; // sway the luck in favor of this team by the chance of thier desired outcome (which did not happen)
+
+        return success;
     }
 
     private void CopyStateToStack()
@@ -123,7 +145,7 @@ public class TurnManager : MonoBehaviour
 
     private static void ApplySwapEffects(CreatureController from, CreatureController to, FieldState globalFieldState, SingleSidedFieldState playerSideFieldState)
     {
-        
+        // stub
     }
 
 
