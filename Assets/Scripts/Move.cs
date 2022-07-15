@@ -9,6 +9,7 @@ public class Move : ScriptableObject
     public int accuracy; // 0-100
     public int basePower;
     public int delayTurns;
+    public int priority;
 
     [SerializeField]
     public List<SecondaryEffect> secondaryEffects = new List<SecondaryEffect>();
