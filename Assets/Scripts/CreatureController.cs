@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static TurnManager;
 
 public class CreatureController : MonoBehaviour
 {
@@ -27,7 +28,13 @@ public class CreatureController : MonoBehaviour
 
     public bool IsValidSwitchIn()
     {
-        return currentDamage < definition.hp;
+        return state.currentDamage < definition.hp;
+    }
+
+    
+    public int GetSpeed(FieldState fieldState, SingleSidedFieldState singleSidedFieldState)
+    {
+        return definition.speed;
     }
 
     public void ApplyEndOfTurnEffects()
