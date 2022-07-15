@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using System.Linq;
 using static CreatureController;
+using static Move;
 
 public class TurnManager : MonoBehaviour
 {
-    public class PlayerManager { }
-
     public enum Type
     {
         ATTACK, DEFEND, NEUTRAL
@@ -40,31 +40,30 @@ public class TurnManager : MonoBehaviour
 
         public FieldState fieldState; // stub, in case we want to add this
         public SingleSidedFieldState[] playersSideStates; // stub, in case we want to add this
-
-        public List<Move> pendingMoves; // stub for now
     }
 
-    public struct Move
-    {
-        public int priority; // stub, in case we want to add this
+    //public struct Move
+    //{
+    //    public int priority; // stub, in case we want to add this
 
-        public string name;
-        public int id;
-        public int power;
-        public int accuracy;
-        public int delayTurns;
-        public Type type;
-    }
+    //    public string name;
+    //    public int id;
+    //    public int power;
+    //    public int accuracy;
+    //    public int delayTurns;
+    //    public Type type;
+    //}
 
     public struct PlayerAction
     {
         public int team; // 0 for player 1, 1 for player 2
+        public int targetTeam;
+        public int madeOnTurn;
         public CreatureController activeCreature;
 
         public bool isSwitchAction;
-        public CreatureController switchToCreature;
-
-        public Move moveTaken;
+        public CreatureController targetCreature; 
+        public Move moveTaken;                    // this will be null if isSwitchAction is true
     }
 
 
@@ -73,14 +72,28 @@ public class TurnManager : MonoBehaviour
     {
         public List<CreatureController> team;
         public CreatureController activeCreature;
+
+        public void ForceSwitch() { }
     }
 
     public List<State> previousStates;
     public State currentState;
     public List<PlayerController> players;
+    public List<PlayerAction> pendingActions;
 
     public void RunTurn(List<PlayerAction> playerActions)
     {
+        // TODO: apply pendingMoves that should activate this turn
+        var pendingActionIter = pendingActions.ToList();
+        foreach(PlayerAction action in pendingActionIter)
+        {
+            if (currentState.turnNumber == action.madeOnTurn+action.moveTaken.delayTurns)
+            {
+                pendingActions.Remove(action);
+                playerActions.Add(action);
+            }
+        }
+
         // sort actions by priority breaking ties by speed
         playerActions.Sort((PlayerAction a, PlayerAction b) => b.activeCreature.GetSpeed(currentState.fieldState, currentState.playersSideStates[b.team]) - a.activeCreature.GetSpeed(currentState.fieldState, currentState.playersSideStates[a.team]));
         playerActions.Sort((PlayerAction a, PlayerAction b) => GetPriority(b, currentState) - GetPriority(a, currentState));
@@ -92,12 +105,14 @@ public class TurnManager : MonoBehaviour
 
             if (action.isSwitchAction)
             {
+                // switch
+
                 action.activeCreature.state.isActiveCreature = false;
-                action.switchToCreature.state.isActiveCreature = true;
+                action.targetCreature.state.isActiveCreature = true;
                 
-                CreatureController switchFrom = player.team[action.switchToCreature.state.indexOnTeam];
+                CreatureController switchFrom = player.team[action.targetCreature.state.indexOnTeam];
                 CreatureController switchTo   = player.team[action.activeCreature.state.indexOnTeam];
-                player.activeCreature = player.team[action.switchToCreature.state.indexOnTeam];
+                player.activeCreature = player.team[action.targetCreature.state.indexOnTeam];
                 
                 ApplySwapEffects(switchFrom, switchTo, currentState.fieldState, playerFieldSideState);
             } 
@@ -105,14 +120,64 @@ public class TurnManager : MonoBehaviour
             {
                 // take move
 
+                // check to see if this move should be pending
+                if (action.moveTaken.delayTurns > 0)
+                {
+                    pendingActions.Add(action);
+                    continue;
+                }
+
+                // reset the action's target creature - if the other player switched this turn we HAVE to update this value
+                action.targetCreature = players[action.targetTeam].activeCreature;
+        
+                // accuracy roll
+
+                var moveHits = MakeBooleanRoll((float)action.moveTaken.accuracy/100f, action.team);
+                if (!moveHits) continue; // move does not hit, skip damage calc and do not apply secondary effects
+
+                // damage
+                int damage = CalculateDamage(action.moveTaken, action.activeCreature.state, action.targetCreature.state);
+                action.targetCreature.TakeDamage(damage);
+
+                if (!action.targetCreature.CanStillFight())
+                {
+                    // force the player to make a switch
+                    players[action.targetCreature.state.team].ForceSwitch();
+                    continue; // no secondary effects if the target faints
+                }
+
+                // secondary effects
+                foreach(SecondaryEffect secondaryEffect in action.moveTaken.secondaryEffects ?? new())
+                {
+                    SecondaryEffectHandler handler = GetSecondaryEffectHandler(secondaryEffect.name);
+                    if (handler == null) continue;
+
+                    handler.Invoke(currentState, action.targetCreature, action.activeCreature, secondaryEffect.parameters);
+                }
             }
         }
 
         CopyStateToStack();
     }
 
+    public delegate void SecondaryEffectHandler(State state, CreatureController applyTo, CreatureController applyFrom, string[] parameters);
+    public SecondaryEffectHandler GetSecondaryEffectHandler(string secondaryEffectName)
+    {
+        switch (secondaryEffectName)
+        {
+
+        }
+        return null;
+    }
+
+    public int CalculateDamage(Move move, CreatureState attacker, CreatureState target)
+    {
+        // TODO: this is a placeholder implementation
+        return 1;
+    }
+
     // this function implements the whole luck mechanic
-    public bool MakeRoll(float positiveOutcomeChance, int team)
+    public bool MakeBooleanRoll(float positiveOutcomeChance, int team)
     {
         bool success = false;
         float relative = team == 0 ? 1 : -1;

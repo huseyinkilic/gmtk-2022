@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,21 +13,22 @@ public class CreatureController : MonoBehaviour
 
         public int currentDamage;
         public bool isActiveCreature;
+
+        public Creature definition;
     }
 
-    public Creature definition;
     public CreatureState state;
     
 
-    public bool IsValidSwitchIn()
+    public bool CanStillFight()
     {
-        return state.currentDamage < definition.hp;
+        return state.currentDamage < state.definition.hp;
     }
 
     
     public int GetSpeed(FieldState fieldState, SingleSidedFieldState singleSidedFieldState)
     {
-        return definition.speed;
+        return state.definition.speed;
     }
 
     public void ApplyEndOfTurnEffects()
@@ -37,5 +39,10 @@ public class CreatureController : MonoBehaviour
     public void ApplyStartOfTurnEffects()
     {
 
+    }
+
+    public void TakeDamage(int damage)
+    {
+        state.currentDamage += damage;
     }
 }
