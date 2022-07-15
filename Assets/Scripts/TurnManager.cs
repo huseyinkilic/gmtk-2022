@@ -128,7 +128,8 @@ public class TurnManager : MonoBehaviour
                 }
 
                 // reset the action's target creature - if the other player switched this turn we HAVE to update this value
-                action.targetCreature = players[action.targetTeam].activeCreature;
+                // TODO: can't modify members of action as it's iteration variable
+                //action.targetCreature = players[action.targetTeam].activeCreature;
         
                 // accuracy roll
 
@@ -163,10 +164,10 @@ public class TurnManager : MonoBehaviour
     public delegate void SecondaryEffectHandler(State state, CreatureController applyTo, CreatureController applyFrom, string[] parameters);
     public SecondaryEffectHandler GetSecondaryEffectHandler(string secondaryEffectName)
     {
-        switch (secondaryEffectName)
-        {
-
-        }
+        //switch (secondaryEffectName)
+        //{
+        //    // TODO: Unity doesn't like empty switch blocks
+        //}
         return null;
     }
 
