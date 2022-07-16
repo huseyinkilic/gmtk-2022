@@ -294,7 +294,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
                 SecondaryEffectHandler handler = GetSecondaryEffectHandler(secondaryEffect.name);
                 if (handler == null) continue;
 
-                handler.Invoke(currentState, action.targetCreature, action.activeCreature, secondaryEffect.parameters);
+                handler.Invoke(currentState, action.targetCreature, action.activeCreature, damage, secondaryEffect.parameters);
             }
         }
 
@@ -313,11 +313,43 @@ public class TurnManager : MonoBehaviour, ITurnManager
         }
     }
 
-    public delegate void SecondaryEffectHandler(GameState state, CreatureController applyTo, CreatureController applyFrom, string[] parameters);
+    public delegate void SecondaryEffectHandler(GameState state, CreatureController targetedCreature, CreatureController attackingCreature, int damageDealt, string[] parameters);
     public SecondaryEffectHandler GetSecondaryEffectHandler(string secondaryEffectName)
     {
         switch (secondaryEffectName)
         {
+            case "heal_percentage": // params: successChance, minPercent, maxPercent
+                return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
+                {
+                    float successChance = float.Parse(parameters[0]);
+                    float minPercent = float.Parse(parameters[1]);
+                    float maxPercent = float.Parse(parameters[2]);
+                    
+                    bool success = MakeBooleanRoll(successChance, attackingCreature.state.team);
+                    if (!success) return;
+
+                    float percentageRolled = MakeFloatRoll(attackingCreature.state.team, minPercent, maxPercent);
+                    attackingCreature.TakeDamage(-attackingCreature.state.definition.hp*percentageRolled);
+                };
+            case "heal_value": // params: successChance, minValue, maxValue
+                return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
+                {
+                    float successChance = float.Parse(parameters[0]);
+                    int minValue = int.Parse(parameters[1]);
+                    int maxValue = int.Parse(parameters[2]);
+                    
+                    bool success = MakeBooleanRoll(successChance, attackingCreature.state.team);
+                    if (!success) return;
+
+                    int valueRolled = MakeDiceRoll(attackingCreature.state.team, minValue, maxValue);
+                    attackingCreature.TakeDamage(-valueRolled);
+                };
+            case "heal_damage_dealt": // params: percentageOfDamageDealtConvertedToHP
+                return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
+                {
+                    float percentageOfDamageDealtConvertedToHP = float.Parse(parameters[0]);
+                    attackingCreature.TakeDamage(-damageDealt*percentageOfDamageDealtConvertedToHP);
+                };
             default: return null;
         }
         return null;
@@ -394,6 +426,66 @@ public class TurnManager : MonoBehaviour, ITurnManager
         else         currentState.luckBalance += relative*positiveOutcomeChance; // sway the luck in favor of this team by the chance of thier desired outcome (which did not happen)
 
         return success;
+    }
+
+    // team should be the team that a high roll would be good for
+    public int MakeDiceRoll(int team, int min, int max)
+    {
+        //float relative = team == 0 ? 1 : -1;
+        //int advantage = 0;
+
+        //if (relative*currentState.luckBalance >= 0.5f) advantage++;
+        //if (relative*currentState.luckBalance >= 1.0f) advantage++;
+
+        //if (relative*currentState.luckBalance <= -0.5f) advantage--;
+        //if (relative*currentState.luckBalance <= -1.0f) advantage--;
+
+        //int roll = Random.Range(min, max+1);
+        //for (int i = 0; i < Mathf.Abs(advantage); i++)
+        //{
+        //    int newRoll = Random.Range(min, max+1);
+        //    if (advantage > 0) roll = Mathf.Max(roll, newRoll);
+        //    if (advantage < 0) roll = Mathf.Min(roll, newRoll);
+        //}
+
+        //// luck balance update formula: ((singleDiceAverage-rolledValue)/diceSideCount)
+        //// this means if you roll a 6 on a six sided dice, your luck balance decreases by around 50%
+        //// if you roll a 3.5, your luck balance does not change
+        //float singleDiceAverage = min + ((float)max-(float)min)/2f;
+        //float numDiceSides = 1+max-min;
+        //currentState.luckBalance += relative*((singleDiceAverage-roll)/numDiceSides);
+
+        return Mathf.FloorToInt(MakeFloatRoll(team, min, max));
+    }
+
+    public float MakeFloatRoll(int team, float min, float max)
+    {
+        float relative = team == 0 ? 1 : -1;
+        int advantage = 0;
+
+        if (relative*currentState.luckBalance >= 0.5f) advantage++;
+        if (relative*currentState.luckBalance >= 1.0f) advantage++;
+
+        if (relative*currentState.luckBalance <= -0.5f) advantage--;
+        if (relative*currentState.luckBalance <= -1.0f) advantage--;
+
+        float range = max-min;
+        float roll = Random.value*range + min;
+        for (int i = 0; i < Mathf.Abs(advantage); i++)
+        {
+            float newRoll = Random.value*range + min;
+            if (advantage > 0) roll = Mathf.Max(roll, newRoll);
+            if (advantage < 0) roll = Mathf.Min(roll, newRoll);
+        }
+
+        // luck balance update formula: ((singleDiceAverage-rolledValue)/diceSideCount)
+        // this means if you roll a 6 on a six sided dice, your luck balance decreases by around 50%
+        // if you roll a 3.5, your luck balance does not change
+        float singleDiceAverage = min + (max-min)/2f;
+        float numDiceSides = max-min;
+        currentState.luckBalance += relative*((singleDiceAverage-roll)/numDiceSides);
+
+        return roll;
     }
 
     private void CopyStateToStack()

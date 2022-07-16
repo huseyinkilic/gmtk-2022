@@ -44,6 +44,7 @@ public class CreatureController
 
     }
 
+    public void TakeDamage(float damage) { TakeDamage(Mathf.FloorToInt(damage)); }
     public void TakeDamage(int damage)
     {
         state.currentDamage += damage;
