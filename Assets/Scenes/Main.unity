@@ -435,7 +435,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &288946824
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1847,7 +1847,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuUI: {fileID: 160883681}
-  buffsUI: {fileID: 288946823}
+  actionsUI: {fileID: 288946823}
   swapUI: {fileID: 2035901373}
   statsUI: {fileID: 450829761}
 --- !u!1001 &1950222455
