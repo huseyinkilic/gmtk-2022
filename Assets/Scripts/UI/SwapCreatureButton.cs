@@ -10,5 +10,7 @@ public class SwapCreatureButton : MonoBehaviour
     {
         var action = TurnManager.Instance.MakeSwitchAction(team, creatureIndex);
         TurnManager.Instance.SubmitAction(action);
+    
+        // TODO: return to the menu "Menu"
     }
 }

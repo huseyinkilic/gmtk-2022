@@ -85,6 +85,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
     public int TurnNumber { get { return currentState.turnNumber; } }
     public float LuckBalance { get { return currentState.luckBalance; } }
+    public GameState CurrentGameState { get { return currentState; } }
     
     public Move[] GetUsableMoves(int playerNum)
     {
@@ -227,6 +228,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
             {
                 // force the player to make a switch
                 players[team.activeCreature.state.team].ForceSwitch();
+                // TODO: await for the switch to happen??
             }
         }
 
@@ -245,6 +247,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
         // finalize
         CopyStateToStack();
+        nextTurnActions.Clear();
         IUI.Instance.TurnManagerReadyToRecieveInput();
     }
 
@@ -297,6 +300,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
             {
                 // force the player to make a switch
                 players[action.targetCreature.state.team].ForceSwitch();
+                // TODO: await for the switch to happen??
                 return; // no secondary effects if the target faints
             }
 
@@ -320,7 +324,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
             {
                 // force the player to make a switch
                 players[action.activeCreature.state.team].ForceSwitch();
-                continue; // no secondary effects if the target faints
+                // TODO: await for the switch to happen??
             }
         }
     }
@@ -362,7 +366,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
                     float percentageOfDamageDealtConvertedToHP = float.Parse(parameters[0])/100f;
                     attackingCreature.TakeDamage(-damageDealt*percentageOfDamageDealtConvertedToHP);
                 };
-            case "self_stat_buff": // params: successChance, stat name, magnitude of buff
+            case "self_stat_buff": // params: successChance, stat name, magnitude of buff (can be negative)
                 return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
                 {
                     float successChance = float.Parse(parameters[0])/100f; 
@@ -380,7 +384,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
                     }
                     IUI.Instance.PlayStatBuffEffect(attackingCreature, stat, levels);
                 };
-            case "opponent_stat_debuff":
+            case "opponent_stat_debuff": // params: chance, statname, magnitude of debuff (can be negative)
                 return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
                 {
                     float successChance = float.Parse(parameters[0])/100f; 
@@ -430,7 +434,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
         float ADRatio = CreatureController.GetAttackStat(attacker) / CreatureController.GetDefenseStat(target);
         float STAB = move.type == (Move.Type)attacker.currentType ? 1.5f : 1; // STAB = same type attack bonus
         float effectiveness = GetMatchup(move.type, target.currentType);
-        return Mathf.FloorToInt(move.basePower * ADRatio * STAB);
+        return Mathf.FloorToInt(move.basePower * ADRatio * STAB * effectiveness);
     }
 
     public float GetMatchup(Move.Type moveType, Creature.Type creatureType)

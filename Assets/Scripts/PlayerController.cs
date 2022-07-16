@@ -12,7 +12,7 @@ public class PlayerController
 
     public void ForceSwitch() 
     { 
-        IUI.Instance.ForceSwitch(this.teamNumber, TurnManager.Instance.HandleAction); 
+        IUI.Instance.ForceSwitch(this.teamNumber); 
     }
 
     public PlayerAction MakeSwitchAction(int switchToIndex)

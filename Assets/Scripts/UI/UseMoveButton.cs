@@ -12,5 +12,7 @@ public class UseMoveButton : MonoBehaviour
         int opposingTeam = 1-team;
         var action = TurnManager.Instance.MakeMoveAction(team, moveIndex, TurnManager.Instance.GetActiveCreature(opposingTeam));
         TurnManager.Instance.SubmitAction(action);
+
+        // TODO: return to the menu "Menu"
     }
 }

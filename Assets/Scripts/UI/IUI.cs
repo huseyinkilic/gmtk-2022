@@ -24,7 +24,7 @@ public interface IUI
     // Control flow changes
     //
 
-    public void ForceSwitch(int player, HandleActionDelegate callback); // force this player into the switch menu, as if they had opened it themself. do not allow them to close it. once they've made a selection, call `callback(MakeMoveAction(...))`
+    public void ForceSwitch(int player); // force this player into the switch menu, as if they had opened it themself. do not allow them to close it. once they've made a selection, call `callback(MakeMoveAction(...))`
     public void TurnManagerReadyToRecieveInput(); // called when a turn is over and the turn manager is ready to recieve input. Also called before the first turn, once both players have been initialized
 
     public void GameOver(int winningPlayer); // -1 means tie, 0 means player 1 won, 1 means player 2 won

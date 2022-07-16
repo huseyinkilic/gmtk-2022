@@ -36,6 +36,8 @@ public interface ITurnManager
     public int TurnNumber { get; }
     public float LuckBalance { get; }
 
+    public GameState CurrentGameState { get; }
+
     public float GetLuckAdustedAccuracy(int playerNum, Move move);
 
     public int GetActiveCreatureCurrentHP(int playerNum);
