@@ -142,6 +142,7 @@ public class BattleUI : MonoBehaviour, IUI
     // Animation handling
     //
 
+    public bool IsPlayingAnimation () { return isPlayingAnimation || pendingAnimations.Count > 0; }
     private IEnumerator PlayAnimation()
     {
         yield return currentAnimation;
@@ -159,10 +160,11 @@ public class BattleUI : MonoBehaviour, IUI
             currentAnimation = animationToPlay;
             isPlayingAnimation = true;
             pendingAnimations.RemoveAt(0);
+            StartCoroutine("PlayAnimation");
         }
 
         // not playing an animation
-        if (!isPlayingAnimation && pendingAnimations.Count <= 0)
+        if (!IsPlayingAnimation())
         {   
             if (forceSwitchPendingP1)
             {
