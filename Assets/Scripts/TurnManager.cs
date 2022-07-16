@@ -203,7 +203,15 @@ public class TurnManager : MonoBehaviour, ITurnManager
         }
 
         // sort actions by priority breaking ties by speed
-        playerActions.Sort((PlayerAction a, PlayerAction b) => b.activeCreature.GetSpeed(currentState.fieldState, currentState.playersSideStates[b.team]) - a.activeCreature.GetSpeed(currentState.fieldState, currentState.playersSideStates[a.team]));
+        playerActions.Sort((PlayerAction a, PlayerAction b) => {
+            float aSpeed = a.activeCreature.GetSpeed(currentState.fieldState, currentState.playersSideStates[a.team]);
+            float bSpeed = b.activeCreature.GetSpeed(currentState.fieldState, currentState.playersSideStates[b.team]);
+            
+            if (aSpeed == bSpeed) return 0;
+            if (aSpeed > bSpeed) return 1;
+            if (aSpeed < bSpeed) return -1;
+            return 0;
+        });
         playerActions.Sort((PlayerAction a, PlayerAction b) => GetPriority(b, currentState) - GetPriority(a, currentState));
 
         // before evaluating actions, apply start of turn effects and see if any creatures faint 
@@ -349,6 +357,42 @@ public class TurnManager : MonoBehaviour, ITurnManager
                 {
                     float percentageOfDamageDealtConvertedToHP = float.Parse(parameters[0]);
                     attackingCreature.TakeDamage(-damageDealt*percentageOfDamageDealtConvertedToHP);
+                };
+            case "self_stat_buff": // params: successChance, stat name, magnitude of buff
+                return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
+                {
+                    float successChance = float.Parse(parameters[0]); 
+                    string stat = parameters[1];
+                    int levels = int.Parse(parameters[2]);
+                    
+                    bool success = MakeBooleanRoll(successChance, attackingCreature.state.team);
+                    if (!success) return;
+                    
+                    switch(stat)
+                    {
+                        case "ATTACK": attackingCreature.state.attackBuffLevel += levels; break;
+                        case "DEFENSE": attackingCreature.state.defenseBuffLevel += levels; break;
+                        case "SPEED": attackingCreature.state.speedBuffLevel += levels; break;
+                    }
+                    IUI.Instance.PlayStatBuffEffect(attackingCreature, stat, levels);
+                };
+            case "opponent_stat_debuff":
+                return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
+                {
+                    float successChance = float.Parse(parameters[0]); 
+                    string stat = parameters[1];
+                    int levels = -int.Parse(parameters[2]);
+                    
+                    bool success = MakeBooleanRoll(successChance, attackingCreature.state.team);
+                    if (!success) return;
+                    
+                    switch(stat)
+                    {
+                        case "ATTACK": targetedCreature.state.attackBuffLevel += levels; break;
+                        case "DEFENSE": targetedCreature.state.defenseBuffLevel += levels; break;
+                        case "SPEED": targetedCreature.state.speedBuffLevel += levels; break;
+                    }
+                    IUI.Instance.PlayStatBuffEffect(attackingCreature, stat, levels);
                 };
             default: return null;
         }
