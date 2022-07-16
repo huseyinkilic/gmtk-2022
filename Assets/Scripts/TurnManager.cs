@@ -16,22 +16,22 @@ public class TurnManager : MonoBehaviour
 
     
 
-    public struct FieldState
+    public class FieldState
     {
         // stub, in case we want to add this
     }
 
-    public struct SingleSidedFieldState 
+    public class SingleSidedFieldState 
     {
         // stub, in case we want to add this
     }
 
-    public struct TeamState
+    public class TeamState
     {
         public CreatureState[] team;
     }
 
-    public struct State
+    public class State
     {
         public int turnNumber;
 
@@ -42,19 +42,7 @@ public class TurnManager : MonoBehaviour
         public SingleSidedFieldState[] playersSideStates; // stub, in case we want to add this
     }
 
-    //public struct Move
-    //{
-    //    public int priority; // stub, in case we want to add this
-
-    //    public string name;
-    //    public int id;
-    //    public int power;
-    //    public int accuracy;
-    //    public int delayTurns;
-    //    public Type type;
-    //}
-
-    public struct PlayerAction
+    public class PlayerAction
     {
         public int team; // 0 for player 1, 1 for player 2
         public int targetTeam;
@@ -83,7 +71,10 @@ public class TurnManager : MonoBehaviour
 
     public void RunTurn(List<PlayerAction> playerActions)
     {
-        // TODO: apply pendingMoves that should activate this turn
+        // increment the turn counter
+        currentState.turnNumber++;
+
+        // apply pendingMoves that should activate this turn
         var pendingActionIter = pendingActions.ToList();
         foreach(PlayerAction action in pendingActionIter)
         {
@@ -98,10 +89,28 @@ public class TurnManager : MonoBehaviour
         playerActions.Sort((PlayerAction a, PlayerAction b) => b.activeCreature.GetSpeed(currentState.fieldState, currentState.playersSideStates[b.team]) - a.activeCreature.GetSpeed(currentState.fieldState, currentState.playersSideStates[a.team]));
         playerActions.Sort((PlayerAction a, PlayerAction b) => GetPriority(b, currentState) - GetPriority(a, currentState));
 
-        foreach(PlayerAction action in playerActions)
+        // before evaluating actions, apply start of turn effects and see if any creatures faint 
+        foreach(PlayerController team in players)
         {
+            if (team.activeCreature.CanStillFight()) team.activeCreature.ApplyStartOfTurnEffects();
+
+            // we check CanStillFight() again in case ApplyStartOfTurnEffects() caused the creature to faint
+            if (!team.activeCreature.CanStillFight())
+            {
+                // force the player to make a switch
+                players[team.activeCreature.state.team].ForceSwitch();
+            }
+        }
+
+        // make actions happen
+        for(int i = 0; i < playerActions.Count; i++)
+        {
+            PlayerAction action = playerActions[i];
+
             PlayerController player = players[action.team];
             SingleSidedFieldState playerFieldSideState = currentState.playersSideStates[action.team];
+
+            if (!action.activeCreature.CanStillFight()) continue; // creature fainted due to earlier action or ApplyStartOfTurnEffects. Cancel this action
 
             if (action.isSwitchAction)
             {
@@ -118,7 +127,7 @@ public class TurnManager : MonoBehaviour
             } 
             else
             {
-                // take move
+                // move
 
                 // check to see if this move should be pending
                 if (action.moveTaken.delayTurns > 0)
@@ -128,8 +137,7 @@ public class TurnManager : MonoBehaviour
                 }
 
                 // reset the action's target creature - if the other player switched this turn we HAVE to update this value
-                // TODO: can't modify members of action as it's iteration variable
-                //action.targetCreature = players[action.targetTeam].activeCreature;
+                action.targetCreature = players[action.targetTeam].activeCreature;
         
                 // accuracy roll
 
@@ -156,6 +164,20 @@ public class TurnManager : MonoBehaviour
                     handler.Invoke(currentState, action.targetCreature, action.activeCreature, secondaryEffect.parameters);
                 }
             }
+
+            // apply end of turn effects to all active creatures and check to see if any active creatures fainted for any reason
+            foreach(PlayerController team in players)
+            {
+                if (team.activeCreature.CanStillFight()) team.activeCreature.ApplyEndOfTurnEffects();
+
+                // we check CanStillFight() again in case ApplyEndOfTurnEffects() caused the creature to faint
+                if (!team.activeCreature.CanStillFight())
+                {
+                    // force the player to make a switch
+                    players[action.activeCreature.state.team].ForceSwitch();
+                    continue; // no secondary effects if the target faints
+                }
+            }
         }
 
         CopyStateToStack();
@@ -178,6 +200,7 @@ public class TurnManager : MonoBehaviour
     }
 
     // this function implements the whole luck mechanic
+    // NOTE: this is the only place that depends on there being only two players. To implement multiple players, we just have to give each player their own luckBalance stat (and add a "int[] teamsNegativelyAffectedByPositiveOutcome" parameter)
     public bool MakeBooleanRoll(float positiveOutcomeChance, int team)
     {
         bool success = false;
