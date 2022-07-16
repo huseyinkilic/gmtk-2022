@@ -30,6 +30,10 @@ public class BattleUI : MonoBehaviour, IUI
     {
     }
 
+    public void PlayStatBuffEffect(CreatureController beingBuffed, string statBeingBuffed, int buffLevel)
+    {
+    }
+
     private void Start()
     {
         
