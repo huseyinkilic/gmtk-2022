@@ -6,6 +6,10 @@ using static TurnManager;
 
 public class CreatureController
 {
+    public enum StatusContidion { NONE, SLEEP, BURN, PARALYZED, POISONED }
+
+    public static readonly int MAX_SLEEP_TURNS = 3;
+
     public class CreatureState
     {
         public int team;
@@ -22,6 +26,10 @@ public class CreatureController
         public int attackBuffLevel;
         public int defenseBuffLevel;
         public int speedBuffLevel;
+
+        public StatusContidion status;
+        public bool movesDisabled;
+        public float turnsSleepingFor;
     }
 
     public CreatureState state;
@@ -40,12 +48,27 @@ public class CreatureController
 
     public void ApplyEndOfTurnEffects()
     {
-
+        if (state.status == StatusContidion.BURN || state.status == StatusContidion.POISONED) TakeDamage(state.definition.hp/16f);
     }
 
     public void ApplyStartOfTurnEffects()
     {
+        // determine paralyzed / sleep wakeup
+        if (state.status == StatusContidion.PARALYZED) state.movesDisabled = !TurnManager.Instance.MakeBooleanRoll(0.75f, state.team);
+        if (state.status == StatusContidion.SLEEP)
+        {
+             if (state.turnsSleepingFor <= 0) state.status = StatusContidion.NONE;
+             else state.movesDisabled = true;
+        }
+    }
 
+    public void ApplyStatusCondition(StatusContidion condition)
+    {
+        if (state.status != StatusContidion.NONE) return;
+
+        if (condition == StatusContidion.SLEEP) state.turnsSleepingFor = (MAX_SLEEP_TURNS+1)-TurnManager.Instance.MakeDiceRoll(state.team, 1, MAX_SLEEP_TURNS);
+        state.status = condition;
+        IUI.Instance.PlayStatusEffectGainEffect(this, condition);
     }
 
     public void TakeDamage(float damage) { TakeDamage(Mathf.FloorToInt(damage)); }
@@ -81,16 +104,19 @@ public class CreatureController
 
     public static float GetAttackStat(CreatureState creature)
     {
-        return creature.definition.attack*BuffLevelToMultiplier(creature.attackBuffLevel);
+        var statusStatDrop = creature.status == StatusContidion.BURN ? 0.5f : 1;
+        return creature.definition.attack * BuffLevelToMultiplier(creature.attackBuffLevel) * statusStatDrop;
     }
     
     public static float GetDefenseStat(CreatureState creature)
     {
-        return creature.definition.defense*BuffLevelToMultiplier(creature.defenseBuffLevel);
+        var statusStatDrop = creature.status == StatusContidion.POISONED ? 0.5f : 1;
+        return creature.definition.defense * BuffLevelToMultiplier(creature.defenseBuffLevel) * statusStatDrop;
     }
     
     public static float GetSpeedStat(CreatureState creature)
     {
-        return creature.definition.defense*BuffLevelToMultiplier(creature.speedBuffLevel);
+        var statusStatDrop = creature.status == StatusContidion.PARALYZED ? 0.5f : 1;
+        return creature.definition.speed * BuffLevelToMultiplier(creature.speedBuffLevel) * statusStatDrop;
     }
 }
