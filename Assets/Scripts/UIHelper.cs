@@ -12,6 +12,8 @@ public class UIHelper : MonoBehaviour
 
     public void DebugInitialize()
     {
+        BattleUI.Instance.player2AI = new SimpleAI();
+
         var creatures = Database.Instance.GetAllCreatures();
         for (int i = 0; i < 2; i++)
         {
@@ -33,6 +35,6 @@ public class UIHelper : MonoBehaviour
             }
 
             TurnManager.Instance.InitializePlayer(i, team);
-        }   
+        } 
     }
 }

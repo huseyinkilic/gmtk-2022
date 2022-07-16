@@ -7,14 +7,14 @@ using System.Collections;
 
 public class BattleUI : MonoBehaviour, IUI
 {
-    public static IUI Instance { get; set; }
+    public static BattleUI Instance { get; set; }
 
     public GameObject menuUI;
     public GameObject actionsUI;
     public GameObject swapUI;
     public GameObject statsUI;
 
-    public IAI player2AI; // if player 2 is a human, leave null
+    [HideInInspector] public IAI player2AI; // if player 2 is a human, leave null
     
     private List<Coroutine> pendingAnimations = new();
     private Coroutine currentAnimation = null;
