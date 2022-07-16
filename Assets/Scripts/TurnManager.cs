@@ -352,7 +352,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
                 };
             default: return null;
         }
-        return null;
+        //return null;
     }
 
     //
