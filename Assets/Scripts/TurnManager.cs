@@ -31,6 +31,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
     public class TeamState
     {
         public CreatureState[] team;
+        public bool luckSpendingEnabled;
     }
 
     public class GameState
@@ -193,11 +194,13 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
         // apply pendingMoves that should activate this turn
         var pendingActionIter = pendingActions.ToList();
-        foreach(PlayerAction action in pendingActionIter)
+        for(int i = 0; i < pendingActionIter.Count; i++)
         {
+            PlayerAction action = pendingActionIter[i];
             if (currentState.turnNumber == action.madeOnTurn+action.moveTaken.delayTurns)
             {
                 pendingActions.Remove(action);
+                if (action.moveTaken != null) action.moveTaken.priority += 10;
                 playerActions.Add(action);
             }
         }
@@ -403,6 +406,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
     // HELPER LOGIC
     //
 
+    // note: DOES NOT change the luck balance
     public int CalculateDamage(Move move, CreatureState attacker, CreatureState target)
     {
         float ADRatio = CreatureController.GetAttackStat(attacker) / CreatureController.GetDefenseStat(target);
@@ -464,6 +468,13 @@ public class TurnManager : MonoBehaviour, ITurnManager
         // if the luck roll failed, roll against positiveOutcomeChance, if this succeeds, then the roll as a whole is considered successful
         if (Random.value < positiveOutcomeChance) success = true;
 
+        // if the player decided to spend their luck, force the roll to be successful and double the luck punishment
+        if (currentState.playersTeams[team].luckSpendingEnabled && relative*currentState.luckBalance > 0) 
+        {
+            success = true; 
+            negativeOutcomeChance *= 2;
+        }
+
         // now influence the luck - if the roll succeeded, sway the luck in favor of the opposing team by (1-positiveOutcomeChance)
         // if the roll failed, sway the luck in favor of this team by positiveOutcomeChance
         if (success) currentState.luckBalance -= relative*negativeOutcomeChance; // sway the luck in favor of the opposing team by the chance of thier desired outcome (which did not happen)
@@ -520,6 +531,13 @@ public class TurnManager : MonoBehaviour, ITurnManager
             float newRoll = Random.value*range + min;
             if (advantage > 0) roll = Mathf.Max(roll, newRoll);
             if (advantage < 0) roll = Mathf.Min(roll, newRoll);
+        }
+
+        // if the player decided to spend their luck, force the roll to be as high as possible and double the luck punishment
+        if (currentState.playersTeams[team].luckSpendingEnabled && relative*currentState.luckBalance > 0) 
+        {
+            roll = max; 
+            relative *= 2;
         }
 
         // luck balance update formula: ((singleDiceAverage-rolledValue)/diceSideCount)
