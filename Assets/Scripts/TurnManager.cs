@@ -225,8 +225,47 @@ public class TurnManager : MonoBehaviour
 
     public int CalculateDamage(Move move, CreatureState attacker, CreatureState target)
     {
-        // TODO: this is a placeholder implementation
-        return 1;
+        float ADRatio = CreatureController.GetAttackStat(attacker) / CreatureController.GetDefenseStat(target);
+        float STAB = move.type == (Move.Type)attacker.currentType ? 1.5f : 1; // STAB = same type attack bonus
+        float effectiveness = GetMatchup(move.type, target.currentType);
+        return Mathf.FloorToInt(move.basePower * ADRatio * STAB);
+    }
+
+    public float GetMatchup(Move.Type moveType, Creature.Type creatureType)
+    {
+        switch (moveType)
+        {
+            case Move.Type.ATTACK: 
+                if (creatureType == Creature.Type.ATTACK) return 1;
+                if (creatureType == Creature.Type.DEFEND) return 0.5f;
+                if (creatureType == Creature.Type.NEUTRAL) return 2;
+                return 1;
+            case Move.Type.DEFEND:
+                if (creatureType == Creature.Type.ATTACK) return 2;
+                if (creatureType == Creature.Type.DEFEND) return 1f;
+                if (creatureType == Creature.Type.NEUTRAL) return 0.5f;
+                return 1;
+            case Move.Type.NEUTRAL:
+                if (creatureType == Creature.Type.ATTACK) return 0.5f;
+                if (creatureType == Creature.Type.DEFEND) return 2f;
+                if (creatureType == Creature.Type.NEUTRAL) return 1f;
+                return 1;
+            default:
+                return 1;
+        }
+    }
+
+    // for UI
+    public float GetLuckAdustedAccuracy(int playerNum, Move move)
+    {
+        float relative = playerNum == 0 ? 1 : -1;
+        float luckActivationChance = relative*currentState.luckBalance;
+        float flatHitChance = move.accuracy;
+        
+        float chanceToMiss = (1-luckActivationChance) * (1-flatHitChance); // both of these rolls have to fail for this move to miss
+        float chanceToHit = 1-chanceToMiss;
+
+        return chanceToHit;
     }
 
     // this function implements the whole luck mechanic
