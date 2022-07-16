@@ -16,9 +16,11 @@ public class BattleUI : MonoBehaviour, IUI
 
     [HideInInspector] public IAI player2AI; // if player 2 is a human, leave null
     
-    private List<Coroutine> pendingAnimations = new();
-    private Coroutine currentAnimation = null;
-    private bool isPlayingAnimation = false;
+    //private List<Coroutine> pendingAnimations = new();
+    //private Coroutine currentAnimation = null;
+    //private bool isPlayingAnimation = false;
+
+    public Animation animation;
 
     private bool forceSwitchPendingP1 = false;
     private bool forceSwitchPendingP2 = false;
@@ -35,14 +37,21 @@ public class BattleUI : MonoBehaviour, IUI
     // change the sprite shown for "team" to the sprite corresponding to "switchTo"
     public void SwapActiveCreature(int team, CreatureController switchTo)
     {
+        // ignore this comment
         // TODO: make some coroutine that plays an animation for this effect and exits when the animation is over, and add it to pendingAnimations
         // if no animation desired, make a coroutine that switches the creature sprite and immediately exits
+
+        AnimationClip clip = null; // TODO: set this clip
+        animation.PlayQueued(clip, QueueMode.CompleteOthers);
     }
 
     // update the HP bar, play special effect, etc. No delay between calls
     public void PlayDamageEffect(CreatureController beingDamaged)
     {
         // TODO: make some coroutine that plays the damage effect and exits when the animation is over, and add it to pendingAnimations
+        
+        AnimationClip clip = null; // TODO: set this clip
+        animation.PlayQueued(clip, QueueMode.CompleteOthers);
     }
 
     public void PlayStatBuffEffect(CreatureController beingBuffed, string statBeingBuffed, int buffLevel)
@@ -142,27 +151,28 @@ public class BattleUI : MonoBehaviour, IUI
     // Animation handling
     //
 
-    private IEnumerator PlayAnimation()
-    {
-        yield return currentAnimation;
+    //private IEnumerator PlayAnimation()
+    //{
+    //    yield return currentAnimation;
         
-        currentAnimation = null;
-        isPlayingAnimation = false;
-    }
+    //    currentAnimation = null;
+    //    isPlayingAnimation = false;
+    //}
 
     private void Update()
     {
         // play pending animations
-        if (!isPlayingAnimation && pendingAnimations.Count > 0)
-        {
-            Coroutine animationToPlay = pendingAnimations[0];
-            currentAnimation = animationToPlay;
-            isPlayingAnimation = true;
-            pendingAnimations.RemoveAt(0);
-        }
+        //if (!isPlayingAnimation && pendingAnimations.Count > 0)
+        //{
+        //    Coroutine animationToPlay = pendingAnimations[0];
+        //    currentAnimation = animationToPlay;
+        //    isPlayingAnimation = true;
+        //    pendingAnimations.RemoveAt(0);
+        //}
 
         // not playing an animation
-        if (!isPlayingAnimation && pendingAnimations.Count <= 0)
+        //if (!isPlayingAnimation && pendingAnimations.Count <= 0)
+        if (!animation.isPlaying)
         {   
             if (forceSwitchPendingP1)
             {
