@@ -6,43 +6,50 @@ using UnityEngine;
 using System.Linq;
 using static CreatureController;
 using static Move;
+using System;
+
+using Random = UnityEngine.Random;
 
 public class TurnManager : MonoBehaviour, ITurnManager
 {
+    [Serializable]
     public enum Type
     {
         ATTACK, DEFEND, NEUTRAL
     }
 
     
-
+    [Serializable]
     public class FieldState
     {
         // stub, in case we want to add this
         // would contain stuff like weather
     }
 
+    [Serializable]
     public class SingleSidedFieldState 
     {
         // stub, in case we want to add this
         // would contain stuff like stealth rocks
     }
 
+    [Serializable]
     public class TeamState
     {
         public CreatureState[] team;
         public bool luckSpendingEnabled;
     }
 
+    [Serializable]
     public class GameState
     {
         public int turnNumber;
 
         public float luckBalance; // positive means in favor of player1, negative means in favor of player2
-        public TeamState[] playersTeams;
+        public TeamState[] playersTeams; // will be set in the Initialize function
 
         public FieldState fieldState; // stub, in case we want to add this
-        public SingleSidedFieldState[] playersSideStates; // stub, in case we want to add this
+        public SingleSidedFieldState[] playersSideStates = new SingleSidedFieldState[2]; // stub, in case we want to add this
     }
 
     public class PlayerAction
@@ -74,6 +81,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
     private void Start()
     {
         Instance = this;
+        ITurnManager.Instance = this;
         players = new();
         
         for (int i = 0; i < 2; i++) players.Add(null);
@@ -208,6 +216,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
         // sort actions by priority breaking ties by speed
         playerActions.Sort((PlayerAction a, PlayerAction b) => {
+            
             float aSpeed = a.activeCreature.GetSpeed(currentState.fieldState, currentState.playersSideStates[a.team]);
             float bSpeed = b.activeCreature.GetSpeed(currentState.fieldState, currentState.playersSideStates[b.team]);
             

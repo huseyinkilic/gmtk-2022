@@ -1,10 +1,12 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 [CreateAssetMenu(fileName = "Move", menuName = "Pokemon/Move")]
 public class Move : ScriptableObject
 {
-    [System.Serializable]
+    [Serializable]
     public class SecondaryEffect
     {
         public string name;

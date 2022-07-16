@@ -8,7 +8,7 @@ using static TurnManager;
 // this name can be changed if you want
 public interface IUI
 {
-    public static IUI Instance { get; }
+    public static IUI Instance { get; set; }
 
     //
     // Visual UI changes

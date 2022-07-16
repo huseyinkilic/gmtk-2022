@@ -1,8 +1,11 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 [CreateAssetMenu(fileName = "Creature", menuName = "Pokemon/Creature")]
 public class Creature : ScriptableObject
 {
+    [Serializable]
     public enum Type
     {
         ATTACK, DEFEND, NEUTRAL
