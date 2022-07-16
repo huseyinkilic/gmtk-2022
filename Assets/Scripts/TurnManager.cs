@@ -398,6 +398,23 @@ public class TurnManager : MonoBehaviour, ITurnManager
                     }
                     IUI.Instance.PlayStatBuffEffect(attackingCreature, stat, levels);
                 };
+            case "opponent_status_condition": // params: chance, condition
+                return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
+                {
+                    float successChance = float.Parse(parameters[0]); 
+                    string condition = parameters[1];
+                    
+                    bool success = MakeBooleanRoll(successChance, attackingCreature.state.team);
+                    if (!success) return;
+                    
+                    switch(condition)
+                    {
+                        case "SLEEP": targetedCreature.ApplyStatusCondition(StatusContidion.SLEEP); break;
+                        case "BURN": targetedCreature.ApplyStatusCondition(StatusContidion.BURN); break;
+                        case "POISON": targetedCreature.ApplyStatusCondition(StatusContidion.POISONED); break;
+                        case "PARALYSIS": targetedCreature.ApplyStatusCondition(StatusContidion.PARALYZED); break;
+                    }
+                };
             default: return null;
         }
         //return null;
