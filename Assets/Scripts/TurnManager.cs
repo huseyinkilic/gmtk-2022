@@ -184,11 +184,11 @@ public class TurnManager : MonoBehaviour, ITurnManager
         nextTurnActions[player] = action;
         foreach(PlayerController p in players) if (!nextTurnActions.ContainsKey(p)) return; // if not all players have picked an action for next turn, end the function
 
-        RunTurn(nextTurnActions.Values.ToList());
+        StartCoroutine("RunTurn", nextTurnActions.Values.ToList());
         nextTurnActions.Clear();
     }
 
-    private void RunTurn(List<PlayerAction> playerActions)
+    private IEnumerator RunTurn(List<PlayerAction> playerActions)
     {
         // increment the turn counter
         currentState.turnNumber++;
@@ -229,13 +229,14 @@ public class TurnManager : MonoBehaviour, ITurnManager
                 // force the player to make a switch
                 players[team.activeCreature.state.team].ForceSwitch();
                 // TODO: await for the switch to happen??
+                yield return new WaitUntil(() => !waitingForSwitchAction);
             }
         }
 
         // make actions happen
         for(int i = 0; i < playerActions.Count; i++)
         {
-            HandleAction(playerActions[i]);
+            yield return HandleAction(playerActions[i]);
         }
 
         // determine if the game is over
@@ -249,14 +250,16 @@ public class TurnManager : MonoBehaviour, ITurnManager
         CopyStateToStack();
         nextTurnActions.Clear();
         IUI.Instance.TurnManagerReadyToRecieveInput();
+
+        yield return null;
     }
 
-    public void HandleAction(PlayerAction action)
+    private IEnumerator HandleAction(PlayerAction action)
     {
         PlayerController player = players[action.team];
         SingleSidedFieldState playerFieldSideState = currentState.playersSideStates[action.team];
 
-        if (!action.activeCreature.CanStillFight()) return; // creature fainted due to earlier action or ApplyStartOfTurnEffects. Cancel this action
+        if (!action.activeCreature.CanStillFight())  yield break; // creature fainted due to earlier action or ApplyStartOfTurnEffects. Cancel this action
 
         if (action.actionType == PlayerAction.ActionType.SWITCH)
         {
@@ -275,13 +278,13 @@ public class TurnManager : MonoBehaviour, ITurnManager
         else
         {
             // move
-            if (action.activeCreature.state.movesDisabled) return; // if the pokemon flinched or something
+            if (action.activeCreature.state.movesDisabled) yield break; // if the pokemon flinched or something
 
             // check to see if this move should be pending
             if (action.moveTaken.delayTurns > 0)
             {
                 pendingActions.Add(action);
-                return;
+                yield break;
             }
 
             // reset the action's target creature - if the other player switched this turn we HAVE to update this value
@@ -290,7 +293,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
             // accuracy roll
 
             var moveHits = MakeBooleanRoll((float)action.moveTaken.accuracy/100f, action.team);
-            if (!moveHits) return; // move does not hit, skip damage calc and do not apply secondary effects
+            if (!moveHits) yield break; // move does not hit, skip damage calc and do not apply secondary effects
 
             // damage
             int damage = CalculateDamage(action.moveTaken, action.activeCreature.state, action.targetCreature.state);
@@ -301,7 +304,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
                 // force the player to make a switch
                 players[action.targetCreature.state.team].ForceSwitch();
                 // TODO: await for the switch to happen??
-                return; // no secondary effects if the target faints
+                yield return new WaitUntil(() => !waitingForSwitchAction);
+                yield break; // no secondary effects if the target faints
             }
 
             // secondary effects
@@ -325,6 +329,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
                 // force the player to make a switch
                 players[action.activeCreature.state.team].ForceSwitch();
                 // TODO: await for the switch to happen??
+                yield return new WaitUntil(() => !waitingForSwitchAction);
             }
         }
     }
