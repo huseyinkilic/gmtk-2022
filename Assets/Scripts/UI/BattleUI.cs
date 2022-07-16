@@ -4,6 +4,12 @@ using static TurnManager;
 
 public class BattleUI : MonoBehaviour, IUI
 {
+
+    public GameObject menuUI;
+    public GameObject buffsUI;
+    public GameObject swapUI;
+    public GameObject statsUI;
+
     // change the sprite shown for "team" to the sprite corresponding to "switchTo"
     public void SwapActiveCreature(int team, CreatureController switchTo)
     {
@@ -11,6 +17,10 @@ public class BattleUI : MonoBehaviour, IUI
 
     // update the HP bar, play special effect, etc. No delay between calls
     public void PlayDamageEffect(CreatureController beingDamaged)
+    {
+    }
+
+    public void PlayStatBuffEffect(CreatureController beingBuffed, string statBeingBuffed, int buffLevel)
     {
     }
 
@@ -30,13 +40,37 @@ public class BattleUI : MonoBehaviour, IUI
     {
     }
 
-    public void PlayStatBuffEffect(CreatureController beingBuffed, string statBeingBuffed, int buffLevel)
+    public void OnBattleClick()
     {
+        menuUI.SetActive(false);
+        buffsUI.SetActive(true);
+    }
+
+    public void OnSwapClick()
+    {
+        menuUI.SetActive(false);
+        swapUI.SetActive(true);
+    }
+
+    public void OnStatsClick()
+    {
+        menuUI.SetActive(false);
+        statsUI.SetActive(true);
+    }
+
+    public void OnBackClick()
+    {
+        menuUI.SetActive(true);
+        swapUI.SetActive(false);
+        statsUI.SetActive(false);
     }
 
     private void Start()
     {
-        
+        menuUI.SetActive(true);
+        buffsUI.SetActive(false);
+        swapUI.SetActive(false);
+        statsUI.SetActive(false);
     }
 
     private void Update()
