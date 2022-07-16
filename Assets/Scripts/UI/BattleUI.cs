@@ -24,6 +24,10 @@ public class BattleUI : MonoBehaviour, IUI
     {
     }
 
+    public void PlayStatusEffectGainEffect(CreatureController creatureRecievingStatus, CreatureController.StatusContidion condition)
+    {
+    }
+
     // force this player into the switch menu, as if they had opened it themself.
     // do not allow them to close it. once they've made a selection, call `callback(MakeMoveAction(...))`
     public void ForceSwitch(int player, HandleActionDelegate callback)
