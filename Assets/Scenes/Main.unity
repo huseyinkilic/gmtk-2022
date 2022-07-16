@@ -1891,8 +1891,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbfe999804d5cc7458fe1d3cca149f03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveDefinitions: []
-  creatureDefinitions: []
+  moveDefinitions:
+  - {fileID: 11400000, guid: 75998a849ca06104d8dbd77b80d6d292, type: 2}
+  - {fileID: 11400000, guid: 27f869127fbb7454cb0d3a20bceb5792, type: 2}
+  - {fileID: 11400000, guid: 2094a6f218ab5184eaa2b195706f3e19, type: 2}
+  - {fileID: 11400000, guid: b3650919563d5b045a1eddf1056ac675, type: 2}
+  - {fileID: 11400000, guid: 4223d135f6b42a64e9fa7d9aced8beaa, type: 2}
+  - {fileID: 11400000, guid: 2ddf55b30510079408614c67ef7ea70b, type: 2}
+  creatureDefinitions:
+  - {fileID: 11400000, guid: 5c6857d9a8725224594b936a7c17645c, type: 2}
+  - {fileID: 11400000, guid: 8e8a7634d6267cf4b9159ce0ea1b79ec, type: 2}
+  - {fileID: 11400000, guid: e7c8bdd84218c774eab748942c85b930, type: 2}
+  - {fileID: 11400000, guid: 73d41414300569e44be5f3d6fd6aae7b, type: 2}
+  - {fileID: 11400000, guid: f8b8a1bed9355bc428f77dc25cd96731, type: 2}
+  - {fileID: 11400000, guid: fce53923db5e0904ea2903bcee107589, type: 2}
 --- !u!114 &1212061427
 MonoBehaviour:
   m_ObjectHideFlags: 0
