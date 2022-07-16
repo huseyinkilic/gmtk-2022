@@ -114,7 +114,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
     {
         float relative = playerNum == 0 ? 1 : -1;
         float luckActivationChance = relative*currentState.luckBalance;
-        float flatHitChance = move.accuracy;
+        float flatHitChance = move.accuracy/100f;
         
         float chanceToMiss = (1-luckActivationChance) * (1-flatHitChance); // both of these rolls have to fail for this move to miss
         float chanceToHit = 1-chanceToMiss;
@@ -333,7 +333,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
             case "heal_percentage": // params: successChance, minPercent, maxPercent
                 return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
                 {
-                    float successChance = float.Parse(parameters[0]);
+                    float successChance = float.Parse(parameters[0])/100f;
                     float minPercent = float.Parse(parameters[1]);
                     float maxPercent = float.Parse(parameters[2]);
                     
@@ -346,7 +346,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
             case "heal_value": // params: successChance, minValue, maxValue
                 return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
                 {
-                    float successChance = float.Parse(parameters[0]);
+                    float successChance = float.Parse(parameters[0])/100f;
                     int minValue = int.Parse(parameters[1]);
                     int maxValue = int.Parse(parameters[2]);
                     
@@ -359,13 +359,13 @@ public class TurnManager : MonoBehaviour, ITurnManager
             case "heal_damage_dealt": // params: percentageOfDamageDealtConvertedToHP
                 return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
                 {
-                    float percentageOfDamageDealtConvertedToHP = float.Parse(parameters[0]);
+                    float percentageOfDamageDealtConvertedToHP = float.Parse(parameters[0])/100f;
                     attackingCreature.TakeDamage(-damageDealt*percentageOfDamageDealtConvertedToHP);
                 };
             case "self_stat_buff": // params: successChance, stat name, magnitude of buff
                 return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
                 {
-                    float successChance = float.Parse(parameters[0]); 
+                    float successChance = float.Parse(parameters[0])/100f; 
                     string stat = parameters[1];
                     int levels = int.Parse(parameters[2]);
                     
@@ -383,7 +383,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
             case "opponent_stat_debuff":
                 return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
                 {
-                    float successChance = float.Parse(parameters[0]); 
+                    float successChance = float.Parse(parameters[0])/100f; 
                     string stat = parameters[1];
                     int levels = -int.Parse(parameters[2]);
                     
@@ -401,7 +401,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
             case "opponent_status_condition": // params: chance, condition
                 return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
                 {
-                    float successChance = float.Parse(parameters[0]); 
+                    float successChance = float.Parse(parameters[0])/100f; 
                     string condition = parameters[1];
                     
                     bool success = MakeBooleanRoll(successChance, attackingCreature.state.team);
