@@ -1,35 +1,25 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
-    public AudioClip battleTheme;
-    public AudioClip lossTheme;
-    public AudioClip victoryTheme;
+    public List<AudioClip> audioClips = new List<AudioClip>();
 
     private Camera mainCamera;
     private AudioSource cameraAudioSource;
 
-    public void PlayBattleTheme()
+    public void Play(string name, bool isLooped)
     {
-        cameraAudioSource.clip = battleTheme;
-        cameraAudioSource.loop = true;
-        cameraAudioSource.Play();
-    }
+        AudioClip clip = audioClips.Find(p => p.name == name);
 
-    public void PlayLossTheme()
-    {
-        cameraAudioSource.clip = lossTheme;
-        cameraAudioSource.loop = false;
-        cameraAudioSource.Play();
-    }
-
-    public void PlayVictoryTheme()
-    {
-        cameraAudioSource.clip = victoryTheme;
-        cameraAudioSource.loop = false;
-        cameraAudioSource.Play();
+        if (clip)
+        {
+            cameraAudioSource.clip = clip;
+            cameraAudioSource.loop = isLooped;
+            cameraAudioSource.Play();
+        }
     }
 
     private void Awake()
