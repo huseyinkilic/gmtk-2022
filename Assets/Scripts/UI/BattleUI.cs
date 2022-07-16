@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using static TurnManager;
+using static AudioManager;
 
 public class BattleUI : MonoBehaviour, IUI
 {
@@ -47,18 +48,21 @@ public class BattleUI : MonoBehaviour, IUI
     {
         menuUI.SetActive(false);
         actionsUI.SetActive(true);
+        AudioManager.Instance.PlayBattleTheme();
     }
 
     public void OnSwapClick()
     {
         menuUI.SetActive(false);
         swapUI.SetActive(true);
+        AudioManager.Instance.PlayLossTheme();
     }
 
     public void OnStatsClick()
     {
         menuUI.SetActive(false);
         statsUI.SetActive(true);
+        AudioManager.Instance.PlayVictoryTheme();
     }
 
     public void OnBackClick()
