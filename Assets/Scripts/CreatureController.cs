@@ -16,6 +16,8 @@ public class CreatureController : MonoBehaviour
 
         public Creature definition;
         public Creature.Type currentType;
+
+        public Move[] knownMoves;
     }
 
     public CreatureState state;
@@ -45,7 +47,7 @@ public class CreatureController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         state.currentDamage += damage;
-        UIInterface.Instance.PlayDamageEffect(this);
+        IUI.Instance.PlayDamageEffect(this);
     }
     
     public static float GetAttackStat(CreatureState creature)

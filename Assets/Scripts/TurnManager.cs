@@ -7,7 +7,7 @@ using System.Linq;
 using static CreatureController;
 using static Move;
 
-public class TurnManager : MonoBehaviour
+public class TurnManager : MonoBehaviour, ITurnManager
 {
     public enum Type
     {
@@ -58,17 +58,6 @@ public class TurnManager : MonoBehaviour
         public Move moveTaken;                    // this will be null if actionType is not MOVE
     }
 
-
-
-    public class PlayerController // Temp, will make its own file later
-    {
-        public int teamNumber;
-        public List<CreatureController> team;
-        public CreatureController activeCreature;
-
-        public void ForceSwitch() { UIInterface.Instance.ForceSwitch(this.teamNumber, TurnManager.Instance.HandleAction); }
-    }
-
     public delegate void HandleActionDelegate(PlayerAction action);
 
     public static TurnManager Instance { get; private set; }
@@ -86,7 +75,76 @@ public class TurnManager : MonoBehaviour
         Instance = this;
     }
 
-    public void SetPlayerAction(PlayerController player, PlayerAction action)
+    //
+    // Interface functions
+    // 
+
+    public int TurnNumber { get { return currentState.turnNumber; } }
+    public float LuckBalance { get { return currentState.luckBalance; } }
+    
+    public Move[] GetUsableMoves(int playerNum)
+    {
+        return players[playerNum].activeCreature.state.knownMoves;
+    }
+
+    public int GetActiveCreatureCurrentHP(int playerNum)
+    {
+        CreatureState s = players[playerNum].activeCreature.state;
+        return s.definition.hp - s.currentDamage;
+    }
+    public int GetActiveCreatureMaxHP(int playerNum)
+    {
+        return players[playerNum].activeCreature.state.definition.hp;
+    }
+    public List<CreatureController> GetPlayerCreatures(int playerNum)
+    {
+        return players[playerNum].team;
+    }
+
+    public CreatureController GetActiveCreature(int playerNum)
+    {
+        return players[playerNum].activeCreature;
+    }
+
+    public float GetLuckAdustedAccuracy(int playerNum, Move move)
+    {
+        float relative = playerNum == 0 ? 1 : -1;
+        float luckActivationChance = relative*currentState.luckBalance;
+        float flatHitChance = move.accuracy;
+        
+        float chanceToMiss = (1-luckActivationChance) * (1-flatHitChance); // both of these rolls have to fail for this move to miss
+        float chanceToHit = 1-chanceToMiss;
+
+        return chanceToHit;
+    }
+
+    
+    public PlayerAction MakeSwitchAction(int playerNum, int switchToIndex)
+    {
+        PlayerController player = players[playerNum];
+        PlayerAction action = player.MakeSwitchAction(switchToIndex);
+        //SubmitPlayerAction(player, action);
+        return action;
+    }
+
+    public PlayerAction MakeMoveAction(int playerNum, int moveIndex, CreatureController targetCreature)
+    {
+        PlayerController player = players[playerNum];
+        PlayerAction action = player.MakeMoveAction(moveIndex, targetCreature);
+        //SubmitPlayerAction(player, action);
+        return action;
+    }
+
+    public void SubmitAction(PlayerAction action)
+    {
+        QueuePlayerAction(players[action.team], action);
+    }
+
+    //
+    // Logic functions
+    //
+
+    private void QueuePlayerAction(PlayerController player, PlayerAction action)
     {
         nextTurnActions[player] = action;
         foreach(PlayerController p in players) if (!nextTurnActions.ContainsKey(p)) return; // if not all players have picked an action for next turn, end the function
@@ -134,10 +192,19 @@ public class TurnManager : MonoBehaviour
             HandleAction(playerActions[i]);
         }
 
+        // determine if the game is over
+        var player1Lost = players[0].team.All(c => !c.CanStillFight());
+        var player2Lost = players[1].team.All(c => !c.CanStillFight());
+        if (player1Lost && player2Lost) IUI.Instance.GameOver(-1);
+        else if (player1Lost)           IUI.Instance.GameOver(ITurnManager.PLAYER_2);
+        else if (player2Lost)           IUI.Instance.GameOver(ITurnManager.PLAYER_1);
+
+        // finalize
         CopyStateToStack();
+        IUI.Instance.TurnManagerReadyToRecieveInput();
     }
 
-    private void HandleAction(PlayerAction action)
+    public void HandleAction(PlayerAction action)
     {
         PlayerController player = players[action.team];
         SingleSidedFieldState playerFieldSideState = currentState.playersSideStates[action.team];
@@ -153,10 +220,10 @@ public class TurnManager : MonoBehaviour
                 
             CreatureController switchFrom = player.team[action.targetCreature.state.indexOnTeam];
             CreatureController switchTo   = player.team[action.activeCreature.state.indexOnTeam];
-            player.activeCreature = player.team[action.targetCreature.state.indexOnTeam];
+            // player.activeCreature = player.team[action.targetCreature.state.indexOnTeam]; // no longer neccessary
                 
             ApplySwapEffects(switchFrom, switchTo, currentState.fieldState, playerFieldSideState);
-            UIInterface.Instance.SwapActiveCreature(player.teamNumber, switchTo);
+            IUI.Instance.SwapActiveCreature(player.teamNumber, switchTo);
         } 
         else
         {
@@ -223,6 +290,10 @@ public class TurnManager : MonoBehaviour
         return null;
     }
 
+    //
+    // HELPER LOGIC
+    //
+
     public int CalculateDamage(Move move, CreatureState attacker, CreatureState target)
     {
         float ADRatio = CreatureController.GetAttackStat(attacker) / CreatureController.GetDefenseStat(target);
@@ -254,19 +325,21 @@ public class TurnManager : MonoBehaviour
                 return 1;
         }
     }
-
-    // for UI
-    public float GetLuckAdustedAccuracy(int playerNum, Move move)
+    private static int GetPriority(PlayerAction action, State state)
     {
-        float relative = playerNum == 0 ? 1 : -1;
-        float luckActivationChance = relative*currentState.luckBalance;
-        float flatHitChance = move.accuracy;
-        
-        float chanceToMiss = (1-luckActivationChance) * (1-flatHitChance); // both of these rolls have to fail for this move to miss
-        float chanceToHit = 1-chanceToMiss;
-
-        return chanceToHit;
+        // state is here as a parameter in case we want to allow the state to affect priority later
+        return action.actionType == PlayerAction.ActionType.SWITCH ? 9999 : action.moveTaken.priority;
     }
+
+    private static void ApplySwapEffects(CreatureController from, CreatureController to, FieldState globalFieldState, SingleSidedFieldState playerSideFieldState)
+    {
+        // stub
+    }
+
+
+    //
+    // Utility
+    //
 
     // this function implements the whole luck mechanic
     // NOTE: this is the only place that depends on there being only two players. To implement multiple players, we just have to give each player their own luckBalance stat (and add a "int[] teamsNegativelyAffectedByPositiveOutcome" parameter)
@@ -294,18 +367,6 @@ public class TurnManager : MonoBehaviour
     {
         previousStates.Add(DeepCopy(currentState));
     }
-
-    private static int GetPriority(PlayerAction action, State state)
-    {
-        // state is here as a parameter in case we want to allow the state to affect priority later
-        return action.actionType == PlayerAction.ActionType.SWITCH ? 9999 : action.moveTaken.priority;
-    }
-
-    private static void ApplySwapEffects(CreatureController from, CreatureController to, FieldState globalFieldState, SingleSidedFieldState playerSideFieldState)
-    {
-        // stub
-    }
-
 
     // https://stackoverflow.com/a/11336951/9643841s
     static public T DeepCopy<T>(T obj)
