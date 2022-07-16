@@ -128,6 +128,7 @@ public class BattleUI : MonoBehaviour, IUI
         menuUI.SetActive(true);
         swapUI.SetActive(false);
         statsUI.SetActive(false);
+        AudioManager.Instance.Play("TitleTheme", true);
     }
 
     private void Start()
@@ -136,6 +137,7 @@ public class BattleUI : MonoBehaviour, IUI
         actionsUI.SetActive(false);
         swapUI.SetActive(false);
         statsUI.SetActive(false);
+        AudioManager.Instance.Play("TitleTheme", true);
     }
 
     //
