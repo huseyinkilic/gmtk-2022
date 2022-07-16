@@ -17,7 +17,7 @@ public class Move : ScriptableObject
     }
 
     public new string name;
-    public int id;
+    public string id;
     public int accuracy; // 0-100
     public int basePower;
     public int delayTurns;

@@ -15,5 +15,5 @@ public class Creature : ScriptableObject
     public int speed;
     public Type type;
 
-    public int[] allowedMoves;
+    public string[] allowedMoves;
 }
