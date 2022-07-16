@@ -13,8 +13,13 @@ MonoBehaviour:
   m_Name: Creature
   m_EditorClassIdentifier: 
   name: 
-  hp: 0
-  attack: 0
-  defense: 0
-  speed: 0
-  allowedMoves: 
+  hp: 100
+  attack: 50
+  defense: 50
+  speed: 10
+  type: 0
+  allowedMoves:
+  - 
+  - 
+  - 
+  - 

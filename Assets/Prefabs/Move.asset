@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a2fa3e5e3f289141b78b9ce7b8c2e79, type: 3}
   m_Name: Move
   m_EditorClassIdentifier: 
-  name: 
+  name: Attack
   id: 0
-  accuracy: 0
-  basePower: 0
-  delayTurns: 0
+  accuracy: 100
+  basePower: 50
+  delayTurns: 1
+  priority: 1
+  type: 0
   secondaryEffects:
   - name: 
     parameters: []

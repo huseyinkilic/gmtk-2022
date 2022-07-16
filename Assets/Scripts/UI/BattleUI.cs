@@ -4,9 +4,8 @@ using static TurnManager;
 
 public class BattleUI : MonoBehaviour, IUI
 {
-
     public GameObject menuUI;
-    public GameObject buffsUI;
+    public GameObject actionsUI;
     public GameObject swapUI;
     public GameObject statsUI;
 
@@ -47,7 +46,7 @@ public class BattleUI : MonoBehaviour, IUI
     public void OnBattleClick()
     {
         menuUI.SetActive(false);
-        buffsUI.SetActive(true);
+        actionsUI.SetActive(true);
     }
 
     public void OnSwapClick()
@@ -72,7 +71,7 @@ public class BattleUI : MonoBehaviour, IUI
     private void Start()
     {
         menuUI.SetActive(true);
-        buffsUI.SetActive(false);
+        actionsUI.SetActive(false);
         swapUI.SetActive(false);
         statsUI.SetActive(false);
     }
