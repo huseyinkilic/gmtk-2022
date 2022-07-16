@@ -5,6 +5,11 @@ using static CreatureController;
 
 public class UIHelper : MonoBehaviour
 {
+    void Start()
+    {
+        DebugInitialize();
+    }
+
     public void DebugInitialize()
     {
         var creatures = Database.Instance.GetAllCreatures();
