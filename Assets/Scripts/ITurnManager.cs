@@ -6,7 +6,7 @@ using static TurnManager;
 
 public interface ITurnManager 
 {
-    public static ITurnManager Instance { get; }
+    public static ITurnManager Instance { get; set; }
     public static readonly int PLAYER_1 = 0;
     public static readonly int PLAYER_2 = 1;
 

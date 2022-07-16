@@ -10,6 +10,7 @@ public class CreatureController
 
     public static readonly int MAX_SLEEP_TURNS = 3;
 
+    [Serializable]
     public class CreatureState
     {
         public int team;

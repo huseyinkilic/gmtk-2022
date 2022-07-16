@@ -5,7 +5,7 @@ using System.Linq;
 
 public class Database : MonoBehaviour
 {
-    public static readonly Database Instance;
+    public static Database Instance { get; private set; }
 
 
     private Dictionary<string, Move> movesByID = new();
@@ -14,6 +14,7 @@ public class Database : MonoBehaviour
 
     public void Start()
     {
+        Instance = this;
         moveDefinitions.ForEach(move => movesByID[move.id] = move); 
         creatureDefinitions.Sort((a, b) => a.name.CompareTo(b.name));
     }

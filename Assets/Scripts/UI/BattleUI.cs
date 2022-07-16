@@ -26,6 +26,7 @@ public class BattleUI : MonoBehaviour, IUI
     private void Awake()
     {
         Instance = this;
+        IUI.Instance = this;
     }
 
     //
