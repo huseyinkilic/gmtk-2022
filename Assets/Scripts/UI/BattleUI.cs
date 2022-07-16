@@ -14,6 +14,14 @@ public class BattleUI : MonoBehaviour, IUI
     {
     }
 
+    public void PlayStatBuffEffect(CreatureController beingBuffed, string statBeingBuffed, int buffLevel)
+    {
+    }
+
+    public void PlayStatusEffectGainEffect(CreatureController creatureRecievingStatus, CreatureController.StatusContidion condition)
+    {
+    }
+
     // force this player into the switch menu, as if they had opened it themself.
     // do not allow them to close it. once they've made a selection, call `callback(MakeMoveAction(...))`
     public void ForceSwitch(int player, HandleActionDelegate callback)
@@ -27,10 +35,6 @@ public class BattleUI : MonoBehaviour, IUI
 
     // -1 means tie, 0 means player 1 won, 1 means player 2 won
     public void GameOver(int winningPlayer)
-    {
-    }
-
-    public void PlayStatBuffEffect(CreatureController beingBuffed, string statBeingBuffed, int buffLevel)
     {
     }
 

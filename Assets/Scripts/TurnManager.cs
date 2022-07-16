@@ -272,6 +272,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
         else
         {
             // move
+            if (action.activeCreature.state.movesDisabled) return; // if the pokemon flinched or something
 
             // check to see if this move should be pending
             if (action.moveTaken.delayTurns > 0)
@@ -456,6 +457,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
     // this function implements the whole luck mechanic
     // NOTE: this is the only place that depends on there being only two players. To implement multiple players, we just have to give each player their own luckBalance stat (and add a "int[] teamsNegativelyAffectedByPositiveOutcome" parameter)
+    // team is the team who benefits from a positive outcome
     public bool MakeBooleanRoll(float positiveOutcomeChance, int team)
     {
         bool success = false;
