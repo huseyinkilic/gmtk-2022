@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using static TurnManager;
 
-// IUI stands for Interface UI... this naming convention doesn't really work here does it
-// this name can be changed if you want
-public interface IUI
+public interface UIInterface
 {
-    public static IUI Instance { get; }
+    public static UIInterface Instance { get; }
 
     public void SwapActiveCreature(int team, CreatureController switchTo); // change the sprite shown for "team" to the sprite corresponding to "switchTo"
     public void PlayDamageEffect(CreatureController beingDamaged); // update the HP bar, play special effect, etc. No delay between calls

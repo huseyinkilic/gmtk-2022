@@ -195,13 +195,13 @@ public class TurnManager : MonoBehaviour, ITurnManager
         // determine if the game is over
         var player1Lost = players[0].team.All(c => !c.CanStillFight());
         var player2Lost = players[1].team.All(c => !c.CanStillFight());
-        if (player1Lost && player2Lost) IUI.Instance.GameOver(-1);
-        else if (player1Lost)           IUI.Instance.GameOver(ITurnManager.PLAYER_2);
-        else if (player2Lost)           IUI.Instance.GameOver(ITurnManager.PLAYER_1);
+        if (player1Lost && player2Lost) UIInterface.Instance.GameOver(-1);
+        else if (player1Lost)           UIInterface.Instance.GameOver(ITurnManager.PLAYER_2);
+        else if (player2Lost)           UIInterface.Instance.GameOver(ITurnManager.PLAYER_1);
 
         // finalize
         CopyStateToStack();
-        IUI.Instance.TurnManagerReadyToRecieveInput();
+        UIInterface.Instance.TurnManagerReadyToRecieveInput();
     }
 
     public void HandleAction(PlayerAction action)
@@ -223,7 +223,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
             // player.activeCreature = player.team[action.targetCreature.state.indexOnTeam]; // no longer neccessary
                 
             ApplySwapEffects(switchFrom, switchTo, currentState.fieldState, playerFieldSideState);
-            IUI.Instance.SwapActiveCreature(player.teamNumber, switchTo);
+            UIInterface.Instance.SwapActiveCreature(player.teamNumber, switchTo);
         } 
         else
         {
