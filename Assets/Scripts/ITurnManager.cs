@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static CreatureController;
 using static TurnManager;
 
 public interface ITurnManager 
@@ -23,6 +24,10 @@ public interface ITurnManager
     public PlayerAction MakeSwitchAction(int playerNum, int switchToIndex); 
     public PlayerAction MakeMoveAction(int playerNum, int moveIndex, CreatureController targetCreature);
     public void SubmitAction(PlayerAction action); 
+
+    // note: each element of creatures only needs the following properties set: definition, knownMoves
+    // knownMoves should be an array of 4 Move objects
+    public void InitializePlayer(int player, CreatureState[] creatures);
 
     //
     // GETTERS

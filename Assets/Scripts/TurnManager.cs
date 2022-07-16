@@ -63,16 +63,19 @@ public class TurnManager : MonoBehaviour, ITurnManager
     public static TurnManager Instance { get; private set; }
 
 
-    public List<State> previousStates;
-    public State currentState;
-    public List<PlayerController> players;
-    public List<PlayerAction> pendingActions;
+    public List<State> previousStates = new();
+    public State currentState = new();
+    public List<PlayerController> players = new();
+    public List<PlayerAction> pendingActions = new();
 
     private Dictionary<PlayerController, PlayerAction> nextTurnActions = new();
 
     private void Start()
     {
         Instance = this;
+        players = new();
+        
+        for (int i = 0; i < 2; i++) players.Add(null);
     }
 
     //
@@ -138,6 +141,36 @@ public class TurnManager : MonoBehaviour, ITurnManager
     public void SubmitAction(PlayerAction action)
     {
         QueuePlayerAction(players[action.team], action);
+    }
+
+    public void InitializePlayer(int playerNum, CreatureState[] creatures)
+    {
+        if (currentState.playersTeams == null) currentState.playersTeams = new TeamState[2];
+
+        // finish initializing the creatures' states
+        for (var i = 0; i < creatures.Length; i++)
+        {
+            creatures[i].team = playerNum;
+            creatures[i].indexOnTeam = i;
+            creatures[i].currentDamage = 0;
+            creatures[i].isActiveCreature = i == 0;
+            creatures[i].currentType = creatures[i].definition.type;
+        }
+
+        // add the creatures' states to the currentState
+        currentState.playersTeams[playerNum] = new TeamState() {
+            team = creatures
+        };
+        
+        // set up the PlayerController objects
+        players[playerNum] = new PlayerController()
+        {
+            teamNumber = playerNum,
+            team = creatures.Select(creatureState => new CreatureController() { state = creatureState }).ToList()
+        };
+
+        // if all players have been initialized, we're ready to go!
+        if (players.All(p => p != null)) IUI.Instance.TurnManagerReadyToRecieveInput();
     }
 
     //

@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using static TurnManager;
 
-public class CreatureController : MonoBehaviour
+public class CreatureController
 {
-    public struct CreatureState
+    public class CreatureState
     {
         public int team;
         public int indexOnTeam;
