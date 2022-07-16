@@ -33,7 +33,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
         public CreatureState[] team;
     }
 
-    public class State
+    public class GameState
     {
         public int turnNumber;
 
@@ -63,8 +63,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
     public static TurnManager Instance { get; private set; }
 
 
-    public List<State> previousStates = new();
-    public State currentState = new();
+    public List<GameState> previousStates = new();
+    public GameState currentState = new();
     public List<PlayerController> players = new();
     public List<PlayerAction> pendingActions = new();
 
@@ -313,7 +313,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
         }
     }
 
-    public delegate void SecondaryEffectHandler(State state, CreatureController applyTo, CreatureController applyFrom, string[] parameters);
+    public delegate void SecondaryEffectHandler(GameState state, CreatureController applyTo, CreatureController applyFrom, string[] parameters);
     public SecondaryEffectHandler GetSecondaryEffectHandler(string secondaryEffectName)
     {
         switch (secondaryEffectName)
@@ -358,7 +358,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
                 return 1;
         }
     }
-    private static int GetPriority(PlayerAction action, State state)
+    private static int GetPriority(PlayerAction action, GameState state)
     {
         // state is here as a parameter in case we want to allow the state to affect priority later
         return action.actionType == PlayerAction.ActionType.SWITCH ? 9999 : action.moveTaken.priority;

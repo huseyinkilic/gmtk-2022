@@ -44,4 +44,6 @@ public interface ITurnManager
 
     public Move[] GetUsableMoves(int playerNum); // returns a list of moves that the the player can use this turn
     public List<CreatureController> GetPlayerCreatures(int playerNum); // useful for displaying the switch menu
+
+    public float GetMatchup(Move.Type moveType, Creature.Type creatureType); // used for AI. could be helpful to add a UI element signaling to the player which move is strong against the opponent though
 }
