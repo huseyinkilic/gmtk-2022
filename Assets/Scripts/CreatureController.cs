@@ -44,5 +44,6 @@ public class CreatureController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         state.currentDamage += damage;
+        UIInterface.Instance.PlayDamageEffect(this);
     }
 }

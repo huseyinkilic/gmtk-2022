@@ -19,11 +19,13 @@ public class TurnManager : MonoBehaviour
     public class FieldState
     {
         // stub, in case we want to add this
+        // would contain stuff like weather
     }
 
     public class SingleSidedFieldState 
     {
         // stub, in case we want to add this
+        // would contain stuff like stealth rocks
     }
 
     public class TeamState
@@ -44,32 +46,56 @@ public class TurnManager : MonoBehaviour
 
     public class PlayerAction
     {
+        public enum ActionType { SWITCH, MOVE }
+
         public int team; // 0 for player 1, 1 for player 2
         public int targetTeam;
         public int madeOnTurn;
         public CreatureController activeCreature;
 
-        public bool isSwitchAction;
+        public ActionType actionType;
         public CreatureController targetCreature; 
-        public Move moveTaken;                    // this will be null if isSwitchAction is true
+        public Move moveTaken;                    // this will be null if actionType is not MOVE
     }
 
 
 
     public class PlayerController // Temp, will make its own file later
     {
+        public int teamNumber;
         public List<CreatureController> team;
         public CreatureController activeCreature;
 
-        public void ForceSwitch() { }
+        public void ForceSwitch() { UIInterface.Instance.ForceSwitch(this.teamNumber, TurnManager.Instance.HandleAction); }
     }
+
+    public delegate void HandleActionDelegate(PlayerAction action);
+
+    public static TurnManager Instance { get; private set; }
+
 
     public List<State> previousStates;
     public State currentState;
     public List<PlayerController> players;
     public List<PlayerAction> pendingActions;
 
-    public void RunTurn(List<PlayerAction> playerActions)
+    private Dictionary<PlayerController, PlayerAction> nextTurnActions = new();
+
+    private void Start()
+    {
+        Instance = this;
+    }
+
+    public void SetPlayerAction(PlayerController player, PlayerAction action)
+    {
+        nextTurnActions[player] = action;
+        foreach(PlayerController p in players) if (!nextTurnActions.ContainsKey(p)) return; // if not all players have picked an action for next turn, end the function
+
+        RunTurn(nextTurnActions.Values.ToList());
+        nextTurnActions.Clear();
+    }
+
+    private void RunTurn(List<PlayerAction> playerActions)
     {
         // increment the turn counter
         currentState.turnNumber++;
@@ -105,91 +131,95 @@ public class TurnManager : MonoBehaviour
         // make actions happen
         for(int i = 0; i < playerActions.Count; i++)
         {
-            PlayerAction action = playerActions[i];
-
-            PlayerController player = players[action.team];
-            SingleSidedFieldState playerFieldSideState = currentState.playersSideStates[action.team];
-
-            if (!action.activeCreature.CanStillFight()) continue; // creature fainted due to earlier action or ApplyStartOfTurnEffects. Cancel this action
-
-            if (action.isSwitchAction)
-            {
-                // switch
-
-                action.activeCreature.state.isActiveCreature = false;
-                action.targetCreature.state.isActiveCreature = true;
-                
-                CreatureController switchFrom = player.team[action.targetCreature.state.indexOnTeam];
-                CreatureController switchTo   = player.team[action.activeCreature.state.indexOnTeam];
-                player.activeCreature = player.team[action.targetCreature.state.indexOnTeam];
-                
-                ApplySwapEffects(switchFrom, switchTo, currentState.fieldState, playerFieldSideState);
-            } 
-            else
-            {
-                // move
-
-                // check to see if this move should be pending
-                if (action.moveTaken.delayTurns > 0)
-                {
-                    pendingActions.Add(action);
-                    continue;
-                }
-
-                // reset the action's target creature - if the other player switched this turn we HAVE to update this value
-                action.targetCreature = players[action.targetTeam].activeCreature;
-        
-                // accuracy roll
-
-                var moveHits = MakeBooleanRoll((float)action.moveTaken.accuracy/100f, action.team);
-                if (!moveHits) continue; // move does not hit, skip damage calc and do not apply secondary effects
-
-                // damage
-                int damage = CalculateDamage(action.moveTaken, action.activeCreature.state, action.targetCreature.state);
-                action.targetCreature.TakeDamage(damage);
-
-                if (!action.targetCreature.CanStillFight())
-                {
-                    // force the player to make a switch
-                    players[action.targetCreature.state.team].ForceSwitch();
-                    continue; // no secondary effects if the target faints
-                }
-
-                // secondary effects
-                foreach(SecondaryEffect secondaryEffect in action.moveTaken.secondaryEffects ?? new())
-                {
-                    SecondaryEffectHandler handler = GetSecondaryEffectHandler(secondaryEffect.name);
-                    if (handler == null) continue;
-
-                    handler.Invoke(currentState, action.targetCreature, action.activeCreature, secondaryEffect.parameters);
-                }
-            }
-
-            // apply end of turn effects to all active creatures and check to see if any active creatures fainted for any reason
-            foreach(PlayerController team in players)
-            {
-                if (team.activeCreature.CanStillFight()) team.activeCreature.ApplyEndOfTurnEffects();
-
-                // we check CanStillFight() again in case ApplyEndOfTurnEffects() caused the creature to faint
-                if (!team.activeCreature.CanStillFight())
-                {
-                    // force the player to make a switch
-                    players[action.activeCreature.state.team].ForceSwitch();
-                    continue; // no secondary effects if the target faints
-                }
-            }
+            HandleAction(playerActions[i]);
         }
 
         CopyStateToStack();
     }
 
+    private void HandleAction(PlayerAction action)
+    {
+        PlayerController player = players[action.team];
+        SingleSidedFieldState playerFieldSideState = currentState.playersSideStates[action.team];
+
+        if (!action.activeCreature.CanStillFight()) return; // creature fainted due to earlier action or ApplyStartOfTurnEffects. Cancel this action
+
+        if (action.actionType == PlayerAction.ActionType.SWITCH)
+        {
+            // switch
+
+            action.activeCreature.state.isActiveCreature = false;
+            action.targetCreature.state.isActiveCreature = true;
+                
+            CreatureController switchFrom = player.team[action.targetCreature.state.indexOnTeam];
+            CreatureController switchTo   = player.team[action.activeCreature.state.indexOnTeam];
+            player.activeCreature = player.team[action.targetCreature.state.indexOnTeam];
+                
+            ApplySwapEffects(switchFrom, switchTo, currentState.fieldState, playerFieldSideState);
+            UIInterface.Instance.SwapActiveCreature(player.teamNumber, switchTo);
+        } 
+        else
+        {
+            // move
+
+            // check to see if this move should be pending
+            if (action.moveTaken.delayTurns > 0)
+            {
+                pendingActions.Add(action);
+                return;
+            }
+
+            // reset the action's target creature - if the other player switched this turn we HAVE to update this value
+            action.targetCreature = players[action.targetTeam].activeCreature;
+        
+            // accuracy roll
+
+            var moveHits = MakeBooleanRoll((float)action.moveTaken.accuracy/100f, action.team);
+            if (!moveHits) return; // move does not hit, skip damage calc and do not apply secondary effects
+
+            // damage
+            int damage = CalculateDamage(action.moveTaken, action.activeCreature.state, action.targetCreature.state);
+            action.targetCreature.TakeDamage(damage);
+
+            if (!action.targetCreature.CanStillFight())
+            {
+                // force the player to make a switch
+                players[action.targetCreature.state.team].ForceSwitch();
+                return; // no secondary effects if the target faints
+            }
+
+            // secondary effects
+            foreach(SecondaryEffect secondaryEffect in action.moveTaken.secondaryEffects ?? new())
+            {
+                SecondaryEffectHandler handler = GetSecondaryEffectHandler(secondaryEffect.name);
+                if (handler == null) continue;
+
+                handler.Invoke(currentState, action.targetCreature, action.activeCreature, secondaryEffect.parameters);
+            }
+        }
+
+        // apply end of turn effects to all active creatures and check to see if any active creatures fainted for any reason
+        foreach(PlayerController team in players)
+        {
+            if (team.activeCreature.CanStillFight()) team.activeCreature.ApplyEndOfTurnEffects();
+
+            // we check CanStillFight() again in case ApplyEndOfTurnEffects() caused the creature to faint
+            if (!team.activeCreature.CanStillFight())
+            {
+                // force the player to make a switch
+                players[action.activeCreature.state.team].ForceSwitch();
+                continue; // no secondary effects if the target faints
+            }
+        }
+    }
+
     public delegate void SecondaryEffectHandler(State state, CreatureController applyTo, CreatureController applyFrom, string[] parameters);
     public SecondaryEffectHandler GetSecondaryEffectHandler(string secondaryEffectName)
     {
-        //switch (secondaryEffectName)
-        //{
-        //    // TODO: Unity doesn't like empty switch blocks
-        //}
+        switch (secondaryEffectName)
+        {
+            default: return null;
+        }
         return null;
     }
 
@@ -229,7 +259,7 @@ public class TurnManager : MonoBehaviour
     private static int GetPriority(PlayerAction action, State state)
     {
         // state is here as a parameter in case we want to allow the state to affect priority later
-        return action.isSwitchAction ? 9999 : action.moveTaken.priority;
+        return action.actionType == PlayerAction.ActionType.SWITCH ? 9999 : action.moveTaken.priority;
     }
 
     private static void ApplySwapEffects(CreatureController from, CreatureController to, FieldState globalFieldState, SingleSidedFieldState playerSideFieldState)
