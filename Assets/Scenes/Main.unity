@@ -2030,6 +2030,10 @@ MonoBehaviour:
   battleTheme: {fileID: 8300000, guid: b15381ce4d37494418dbbd0241fce948, type: 3}
   lossTheme: {fileID: 8300000, guid: 7fd68c8e16e9ae54d8030cdd7b76387e, type: 3}
   victoryTheme: {fileID: 8300000, guid: 39a7ea021eb26474bbc1ecb99c731b54, type: 3}
+  audioClips:
+  - {fileID: 8300000, guid: b15381ce4d37494418dbbd0241fce948, type: 3}
+  - {fileID: 8300000, guid: 7fd68c8e16e9ae54d8030cdd7b76387e, type: 3}
+  - {fileID: 8300000, guid: 39a7ea021eb26474bbc1ecb99c731b54, type: 3}
 --- !u!1 &1364370105
 GameObject:
   m_ObjectHideFlags: 0

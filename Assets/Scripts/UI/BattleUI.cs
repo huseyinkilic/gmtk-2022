@@ -48,21 +48,21 @@ public class BattleUI : MonoBehaviour, IUI
     {
         menuUI.SetActive(false);
         actionsUI.SetActive(true);
-        AudioManager.Instance.PlayBattleTheme();
+        AudioManager.Instance.Play("BattleTheme", true);
     }
 
     public void OnSwapClick()
     {
         menuUI.SetActive(false);
         swapUI.SetActive(true);
-        AudioManager.Instance.PlayLossTheme();
+        AudioManager.Instance.Play("LossTheme", false);
     }
 
     public void OnStatsClick()
     {
         menuUI.SetActive(false);
         statsUI.SetActive(true);
-        AudioManager.Instance.PlayVictoryTheme();
+        AudioManager.Instance.Play("VictoryTheme", false);
     }
 
     public void OnBackClick()
