@@ -1031,6 +1031,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   team: 0
   creatureIndex: 0
+  button: {fileID: 4513630065090273824}
   hp: {fileID: 7621191424633072977}
   name: {fileID: 4513630065541601679}
   sprite: {fileID: 4513630064917365929}

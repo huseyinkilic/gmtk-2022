@@ -10,7 +10,7 @@ public class SwapCreatureButton : MonoBehaviour
     public int creatureIndex;
 
     private BattleUI ui;
-    private Button button;
+    public Button button;
 
     public Image hp;
     public Text name;
@@ -20,7 +20,7 @@ public class SwapCreatureButton : MonoBehaviour
     public void Awake()
     {
         ui = Resources.FindObjectsOfTypeAll<BattleUI>()[0];
-        button = GetComponent<Button>();
+        //button = GetComponent<Button>();
     }
 
     public void MakeAndSubmitAction()
@@ -52,8 +52,10 @@ public class SwapCreatureButton : MonoBehaviour
         }   
 
         Debug.LogWarning($"SWITCHING TO {switchTo.state.definition.name}");
-
+        
+        try { 
         if (switchTo.state.indexOnTeam == creatureIndex) button.interactable = false;
         else button.interactable = TurnManager.Instance.GetPlayerCreatures(0)[creatureIndex].CanStillFight();
+    } catch { }
     }
 }
