@@ -64,6 +64,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
         public ActionType actionType;
         public CreatureController targetCreature; 
         public Move moveTaken;                    // this will be null if actionType is not MOVE
+
+        internal float speed; // just to make an error go away
     }
 
     public delegate void HandleActionDelegate(PlayerAction action);
@@ -151,6 +153,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
     public void SubmitAction(PlayerAction action)
     {
         Debug.LogWarning($"Player action queued (player {action.team+1})");
+        action.speed = action.activeCreature.GetSpeed(currentState.fieldState, /*currentState.playersSideStates[action.team]*/ null);
         QueuePlayerAction(players[action.team], action);
     }
 
@@ -233,9 +236,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
         // sort actions by priority breaking ties by speed
         playerActions.Sort((PlayerAction a, PlayerAction b) => {
-            
-            float aSpeed = a.activeCreature.GetSpeed(currentState.fieldState, currentState.playersSideStates[a.team]);
-            float bSpeed = b.activeCreature.GetSpeed(currentState.fieldState, currentState.playersSideStates[b.team]);
+            float aSpeed = a.speed;//a.activeCreature.GetSpeed(currentState.fieldState, currentState.playersSideStates[a.team]);
+            float bSpeed = b.speed;//b.activeCreature.GetSpeed(currentState.fieldState, currentState.playersSideStates[b.team]);
             
             if (aSpeed == bSpeed) return 0;
             if (aSpeed > bSpeed) return 1;
@@ -283,7 +285,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
     public void HandleAction(PlayerAction action)
     {
         PlayerController player = players[action.team];
-        SingleSidedFieldState playerFieldSideState = currentState.playersSideStates[action.team];
+        SingleSidedFieldState playerFieldSideState = null; //currentState.playersSideStates[action.team];
 
         bool playerIsRespondingToAForcedSwitch = player.pendingForcedSwitch && action.actionType == PlayerAction.ActionType.SWITCH;
         if (!action.activeCreature.CanStillFight() && !playerIsRespondingToAForcedSwitch) // creature fainted due to earlier action or ApplyStartOfTurnEffects. Cancel this action
