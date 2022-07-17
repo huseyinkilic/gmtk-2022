@@ -11,6 +11,8 @@ public class Creature : ScriptableObject
         ATTACK, DEFEND, NEUTRAL
     }
 
+    public Sprite sprite;
+
     public new string name;
     public int hp;
     public int attack;

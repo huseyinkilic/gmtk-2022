@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a12d7a8697bbd64c8dc184da082d027, type: 3}
   m_Name: Lizard
   m_EditorClassIdentifier: 
+  sprite: {fileID: -851648954, guid: 6e1b06b1022b76845bbaa72186593960, type: 3}
   name: Lizard
   hp: 110
   attack: 95
