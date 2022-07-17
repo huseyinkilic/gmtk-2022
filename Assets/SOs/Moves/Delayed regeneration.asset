@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a2fa3e5e3f289141b78b9ce7b8c2e79, type: 3}
-  m_Name: Sporesofweakness
+  m_Name: Delayed regeneration
   m_EditorClassIdentifier: 
-  name: Spores of weakness
-  id: Spores of weakness
+  name: Delayed regeneration
+  id: Delayed regeneration
   accuracy: 100
   basePower: 0
-  delayTurns: 0
-  priority: 0
-  type: 0
+  delayTurns: 1
+  priority: -5
+  type: 1
   secondaryEffects:
-  - name: opponent_stat_debuff
+  - name: heal_percentage
     parameters:
     - 100
-    - ATTACK
-    - 1
+    - 50
+    - 50
   - name: change_type
     parameters:
-    - NEUTRAL
+    - DEFENSE

@@ -343,7 +343,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
             }
 
             // damage
-            int damage = CalculateDamage(action.moveTaken, action.activeCreature.state, action.targetCreature.state);
+            bool crit = action.moveTaken.basePower > 0 ? MakeBooleanRoll(0.1f, action.team, 0.1f) : false;
+            int damage = CalculateDamage(action.moveTaken, action.activeCreature.state, action.targetCreature.state, crit);
             action.targetCreature.TakeDamage(damage);
             
             string effectivenessText = "";
@@ -351,6 +352,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
             if (matchup > 1) effectivenessText = " It's super effective!";
             if (matchup < 1) effectivenessText = " It's not very effective!";
             ActionLogger.LogMessage($"{action.activeCreature.state.definition.name} hit its attack! It dealt {damage} damage to Player {action.targetCreature.state.team+1}'s {action.targetCreature.state.definition.name}.{effectivenessText}");
+            if (crit)         ActionLogger.LogMessage($"It's a critical hit!");
 
             if (!action.targetCreature.CanStillFight())
             {
@@ -519,12 +521,13 @@ public class TurnManager : MonoBehaviour, ITurnManager
     //
 
     // note: DOES NOT change the luck balance
-    public int CalculateDamage(Move move, CreatureState attacker, CreatureState target)
+    public int CalculateDamage(Move move, CreatureState attacker, CreatureState target, bool crit = false)
     {
         float ADRatio = CreatureController.GetAttackStat(attacker) / CreatureController.GetDefenseStat(target);
         float STAB = move.type == (Move.Type)attacker.currentType ? 1.5f : 1; // STAB = same type attack bonus
         float effectiveness = GetMatchup(move.type, target.currentType);
-        return Mathf.FloorToInt(move.basePower * ADRatio * STAB * effectiveness);
+        float critBonus = crit? 1.5f : 1f;
+        return Mathf.FloorToInt(move.basePower * ADRatio * STAB * effectiveness) * critBonus;
     }
 
     public float GetMatchup(Move.Type moveType, Creature.Type creatureType)
@@ -569,14 +572,14 @@ public class TurnManager : MonoBehaviour, ITurnManager
     // this function implements the whole luck mechanic
     // NOTE: this is the only place that depends on there being only two players. To implement multiple players, we just have to give each player their own luckBalance stat (and add a "int[] teamsNegativelyAffectedByPositiveOutcome" parameter)
     // team is the team who benefits from a positive outcome
-    public bool MakeBooleanRoll(float positiveOutcomeChance, int team)
+    public bool MakeBooleanRoll(float positiveOutcomeChance, int team, float luckFactor=1f)
     {
         bool success = false;
         float relative = team == 0 ? 1 : -1;
         float negativeOutcomeChance = (1-positiveOutcomeChance);
 
         // first, make a roll against the luck. if this succeeds, then the roll as a whole is considered successful
-        if (Random.value < relative*currentState.luckBalance) success = true;
+        if (Random.value < relative*currentState.luckBalance*luckFactor) success = true;
 
         // if the luck roll failed, roll against positiveOutcomeChance, if this succeeds, then the roll as a whole is considered successful
         if (Random.value < positiveOutcomeChance) success = true;
@@ -590,8 +593,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
         // now influence the luck - if the roll succeeded, sway the luck in favor of the opposing team by (1-positiveOutcomeChance)
         // if the roll failed, sway the luck in favor of this team by positiveOutcomeChance
-        if (success) currentState.luckBalance -= relative*negativeOutcomeChance; // sway the luck in favor of the opposing team by the chance of thier desired outcome (which did not happen)
-        else         currentState.luckBalance += relative*positiveOutcomeChance; // sway the luck in favor of this team by the chance of thier desired outcome (which did not happen)
+        if (success) currentState.luckBalance -= relative*negativeOutcomeChance*luckFactor; // sway the luck in favor of the opposing team by the chance of thier desired outcome (which did not happen)
+        else         currentState.luckBalance += relative*positiveOutcomeChance*luckFactor; // sway the luck in favor of this team by the chance of thier desired outcome (which did not happen)
 
         return success;
     }
