@@ -3316,6 +3316,18 @@ MonoBehaviour:
   MoveButton_AttackType: {fileID: 0}
   MoveButton_DefenseType: {fileID: 0}
   MoveButton_NeutralType: {fileID: 0}
+  moveButtons:
+  - {fileID: 2038121741}
+  - {fileID: 704841339}
+  - {fileID: 1913600495}
+  - {fileID: 509990339}
+  switchButtons:
+  - {fileID: 870647342}
+  - {fileID: 812773264}
+  - {fileID: 1670517029}
+  - {fileID: 142024951}
+  - {fileID: 147941571}
+  - {fileID: 1927162702}
 --- !u!114 &1858309039
 MonoBehaviour:
   m_ObjectHideFlags: 0

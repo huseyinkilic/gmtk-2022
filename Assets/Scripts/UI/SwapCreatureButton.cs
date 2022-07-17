@@ -35,6 +35,12 @@ public class SwapCreatureButton : MonoBehaviour
 
     public void HandleSwitchIn(CreatureController switchTo)
     {
+        if (TurnManager.Instance.GetPlayerCreatures(0).Count <= creatureIndex) 
+        {
+            button.interactable = false;
+            return;
+        }   
+
         if (switchTo.state.indexOnTeam == creatureIndex) button.interactable = false;
         else button.interactable = TurnManager.Instance.GetPlayerCreatures(0)[creatureIndex].CanStillFight();
     }
