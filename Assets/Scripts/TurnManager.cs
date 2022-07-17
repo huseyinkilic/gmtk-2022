@@ -185,6 +185,10 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
         // if all players have been initialized, we're ready to go!
         if (players.All(p => p != null)) IUI.Instance.TurnManagerReadyToRecieveInput();
+
+        // "swap in" the players' starting creatures
+        BattleUI.Instance.SwapActiveCreature(0, players[0].team[0]);
+        BattleUI.Instance.SwapActiveCreature(1, players[1].team[0]);
     }
 
     //
