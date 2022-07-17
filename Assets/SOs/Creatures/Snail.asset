@@ -19,7 +19,7 @@ MonoBehaviour:
   speed: 75
   type: 0
   allowedMoves:
-  - 
-  - 
-  - 
-  - 
+  - 'Toughen up '
+  - Slap!
+  - 'Drop and roll '
+  - Scary Look

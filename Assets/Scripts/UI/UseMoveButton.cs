@@ -51,6 +51,6 @@ public class UseMoveButton : MonoBehaviour
         nameText.text = creature.state.knownMoves[moveIndex].name;
         accText.text = creature.state.knownMoves[moveIndex].accuracy + "";
         powerText.text = creature.state.knownMoves[moveIndex].basePower + "";
-        //descriptionText.text = creature.state.knownMoves[moveIndex].description;
+        descriptionText.text = creature.state.knownMoves[moveIndex].description;
     }
 }

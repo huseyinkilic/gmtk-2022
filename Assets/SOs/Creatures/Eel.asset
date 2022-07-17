@@ -19,7 +19,7 @@ MonoBehaviour:
   speed: 100
   type: 1
   allowedMoves:
-  - 
-  - 
-  - 
-  - 
+  - Scary look
+  - Delayed regeneration
+  - Quick Jab
+  - Slow

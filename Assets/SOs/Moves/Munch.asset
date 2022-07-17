@@ -19,6 +19,8 @@ MonoBehaviour:
   delayTurns: 0
   priority: 0
   type: 1
+  description: Deals damage, then heals the user by 10% of the damage dealt by this
+    move, then changes the user's type to Defensive.
   secondaryEffects:
   - name: heal_percentage
     parameters:

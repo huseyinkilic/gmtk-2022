@@ -19,7 +19,7 @@ MonoBehaviour:
   speed: 102
   type: 2
   allowedMoves:
-  - 
-  - 
-  - 
-  - 
+  - Scratch
+  - Dance
+  - Pose
+  - Thick skin

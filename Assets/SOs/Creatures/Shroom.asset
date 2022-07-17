@@ -19,7 +19,7 @@ MonoBehaviour:
   speed: 40
   type: 2
   allowedMoves:
-  - 
-  - 
-  - 
-  - 
+  - Poison spores
+  - Spores of weakness
+  - Sticky spores
+  - Recover

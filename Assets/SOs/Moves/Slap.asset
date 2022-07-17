@@ -19,6 +19,7 @@ MonoBehaviour:
   delayTurns: 0
   priority: 0
   type: 2
+  description: Deals damage ang changes the user's type to Neutral.
   secondaryEffects:
   - name: opponent_decrease_accuracy
     parameters:

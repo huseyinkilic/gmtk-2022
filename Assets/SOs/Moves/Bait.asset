@@ -19,9 +19,10 @@ MonoBehaviour:
   delayTurns: 0
   priority: 0
   type: 2
+  description: Lowers the opponent's defense stat by one stage.
   secondaryEffects:
   - name: opponent_stat_debuff
     parameters:
     - 100
     - DEFENSE
-    - ATTACK
+    - 1

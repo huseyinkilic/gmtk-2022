@@ -19,6 +19,7 @@ MonoBehaviour:
   delayTurns: 0
   priority: 0
   type: 0
+  description: 'Lower the opponent''s attack stat by one stage and change '
   secondaryEffects:
   - name: opponent_stat_debuff
     parameters:

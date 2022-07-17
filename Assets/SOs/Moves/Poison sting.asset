@@ -19,6 +19,8 @@ MonoBehaviour:
   delayTurns: 0
   priority: 0
   type: 0
+  description: Deals damage and has a 30% chance to poison the opponent, then changes
+    the user's type to Attacking.
   secondaryEffects:
   - name: opponent_status_condition
     parameters:

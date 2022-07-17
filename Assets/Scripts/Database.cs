@@ -21,6 +21,7 @@ public class Database : MonoBehaviour
 
     public Move MoveFromID(string moveId)
     {
+        if (!movesByID.ContainsKey(moveId)) Debug.LogError($"No move exists with id {moveId}");
         return movesByID.GetValueOrDefault(moveId);
     }
 

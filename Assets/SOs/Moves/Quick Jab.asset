@@ -19,6 +19,7 @@ MonoBehaviour:
   delayTurns: 0
   priority: 1
   type: 0
+  description: Deals damage and changes the user's type to Attacking.
   secondaryEffects:
   - name: change_type
     parameters:

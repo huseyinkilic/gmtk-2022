@@ -19,6 +19,8 @@ MonoBehaviour:
   delayTurns: 0
   priority: 0
   type: 2
+  description: Lowers the opponent's speed stat by one stage and changes the user's
+    type to Neutral.
   secondaryEffects:
   - name: opponent_stat_debuff
     parameters:

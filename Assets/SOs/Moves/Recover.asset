@@ -19,6 +19,7 @@ MonoBehaviour:
   delayTurns: 0
   priority: 0
   type: 1
+  description: Heals the user for anywhere between 5% and 50% of the user's max health.
   secondaryEffects:
   - name: heal_percentage
     parameters:

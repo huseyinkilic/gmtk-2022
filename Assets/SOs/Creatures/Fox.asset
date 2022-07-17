@@ -19,7 +19,7 @@ MonoBehaviour:
   speed: 115
   type: 0
   allowedMoves:
-  - 
-  - 
-  - 
-  - 
+  - Lick
+  - Intimidate
+  - Scratch
+  - Bait

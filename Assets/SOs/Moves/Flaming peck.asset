@@ -19,6 +19,7 @@ MonoBehaviour:
   delayTurns: 0
   priority: 0
   type: 0
+  description: Deal damage, then burn the target and change the user's type to Attacking.
   secondaryEffects:
   - name: opponent_status_condition
     parameters:

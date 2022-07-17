@@ -19,6 +19,8 @@ MonoBehaviour:
   delayTurns: 0
   priority: 0
   type: 2
+  description: Raises the user's defense stat by one stage, then changes the user's
+    type to Neutral.
   secondaryEffects:
   - name: opponent_stat_debuff
     parameters:

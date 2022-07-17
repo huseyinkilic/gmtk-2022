@@ -19,6 +19,8 @@ MonoBehaviour:
   delayTurns: 0
   priority: 0
   type: 2
+  description: Deals damage, then paralyzes the opponent and changes the user's type
+    to Neutral.
   secondaryEffects:
   - name: opponent_status_condition
     parameters:

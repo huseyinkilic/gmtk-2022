@@ -19,7 +19,7 @@ MonoBehaviour:
   speed: 15
   type: 1
   allowedMoves:
-  - 
-  - 
-  - 
-  - 
+  - Munch
+  - Paralysing sting
+  - Dance
+  - Crunch

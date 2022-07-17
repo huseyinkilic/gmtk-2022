@@ -25,6 +25,7 @@ public class Move : ScriptableObject
     public int delayTurns;
     public int priority;
     public Type type;
+    public string description;
 
     [SerializeField]
     public List<SecondaryEffect> secondaryEffects = new List<SecondaryEffect>();

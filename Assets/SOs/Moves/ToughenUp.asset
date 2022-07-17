@@ -19,6 +19,8 @@ MonoBehaviour:
   delayTurns: 0
   priority: 0
   type: 1
+  description: Raises the user's defense stat by one stage and changes the user's
+    type to Defensive.
   secondaryEffects:
   - name: self_stat_buff
     parameters:

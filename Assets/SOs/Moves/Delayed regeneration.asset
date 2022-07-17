@@ -19,6 +19,8 @@ MonoBehaviour:
   delayTurns: 1
   priority: -5
   type: 1
+  description: Next turn, heal your active creature for 50% of their max health and
+    change their type to Defensive.
   secondaryEffects:
   - name: heal_percentage
     parameters:

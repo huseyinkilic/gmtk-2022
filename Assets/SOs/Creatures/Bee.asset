@@ -19,7 +19,7 @@ MonoBehaviour:
   speed: 130
   type: 2
   allowedMoves:
-  - 
-  - 
-  - 
-  - 
+  - Quick Jab
+  - Paralysing sting
+  - Toughen up!
+  - Poison sting
