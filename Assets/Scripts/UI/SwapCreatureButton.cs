@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,5 +31,11 @@ public class SwapCreatureButton : MonoBehaviour
         if (!creature.CanStillFight()) button.interactable = false;
 
         // TODO: update the hp bar
+    }
+
+    public void HandleSwitchIn(CreatureController switchTo)
+    {
+        if (switchTo.state.indexOnTeam == creatureIndex) button.interactable = false;
+        else button.interactable = TurnManager.Instance.GetPlayerCreatures(0)[creatureIndex].CanStillFight();
     }
 }

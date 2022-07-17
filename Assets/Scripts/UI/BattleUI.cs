@@ -16,8 +16,8 @@ public class BattleUI : MonoBehaviour, IUI
 
     [HideInInspector] public IAI player2AI; // if player 2 is a human, leave null
     
-    private List<Coroutine> pendingAnimations = new();
-    private Coroutine currentAnimation = null;
+    private List<IEnumerator> pendingAnimations = new();
+    private IEnumerator currentAnimation = null;
     private bool isPlayingAnimation = false;
 
     private bool forceSwitchPendingP1 = false;
@@ -26,6 +26,9 @@ public class BattleUI : MonoBehaviour, IUI
     public Sprite MoveButton_AttackType;
     public Sprite MoveButton_DefenseType;
     public Sprite MoveButton_NeutralType;
+
+    public List<UseMoveButton> moveButtons;
+    public List<SwapCreatureButton> switchButtons;
 
     private void Awake()
     {
@@ -42,6 +45,21 @@ public class BattleUI : MonoBehaviour, IUI
     {
         // TODO: make some coroutine that plays an animation for this effect and exits when the animation is over, and add it to pendingAnimations
         // if no animation desired, make a coroutine that switches the creature sprite and immediately exits
+        pendingAnimations.Add(SwapActiveCreatureAnimation(team, switchTo));
+    }
+
+    IEnumerator SwapActiveCreatureAnimation(int team, CreatureController switchTo)
+    {
+        if (team == 0)
+        {
+            foreach(var moveButton in moveButtons) moveButton.HandleSwitchIn(switchTo);
+            foreach(var swapButton in switchButtons) swapButton.HandleSwitchIn(switchTo);
+        }
+
+        // TODO: yield return wait for swap animation to complete
+        // TODO: switch the sprite of team's creature
+
+        yield break;
     }
 
     // update the HP bar, play special effect, etc. No delay between calls
@@ -199,7 +217,7 @@ public class BattleUI : MonoBehaviour, IUI
         // play pending animations
         if (!isPlayingAnimation && pendingAnimations.Count > 0)
         {
-            Coroutine animationToPlay = pendingAnimations[0];
+            IEnumerator animationToPlay = pendingAnimations[0];
             currentAnimation = animationToPlay;
             isPlayingAnimation = true;
             pendingAnimations.RemoveAt(0);
