@@ -12,6 +12,11 @@ public class UseMoveButton : MonoBehaviour
     private Button button;
     public Text nameText;
 
+    public Text accText;
+    public Text powerText;
+
+    public Text descriptionText;
+
     public void Awake()
     {
         ui = Resources.FindObjectsOfTypeAll<BattleUI>()[0];
@@ -43,10 +48,9 @@ public class UseMoveButton : MonoBehaviour
 
         button.GetComponent<Image>().sprite = s;
 
-        // TODO: and now set the text
-        // nameText.text = creature.state.knownMoves[moveIndex].name;
-        // descriptionText.text = ...
-        // accuracyText
-        // powerText
+        nameText.text = creature.state.knownMoves[moveIndex].name;
+        accText.text = creature.state.knownMoves[moveIndex].accuracy + "";
+        powerText.text = creature.state.knownMoves[moveIndex].basePower + "";
+        //descriptionText.text = creature.state.knownMoves[moveIndex].description;
     }
 }
