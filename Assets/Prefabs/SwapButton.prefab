@@ -963,6 +963,7 @@ GameObject:
   - component: {fileID: 4513630065631333460}
   - component: {fileID: 4513630065631333458}
   - component: {fileID: 4513630065631333461}
+  - component: {fileID: 319047068957356702}
   m_Layer: 5
   m_Name: SwapButton
   m_TagString: Untagged
@@ -1031,6 +1032,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &319047068957356702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4513630065631333463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ebebd9ffeb548e4d8dfbd0aae27b90f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 0
+  creatureIndex: 0
 --- !u!1 &4513630065975366346
 GameObject:
   m_ObjectHideFlags: 0
