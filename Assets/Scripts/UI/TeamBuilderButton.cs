@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class TeamBuilderButton : MonoBehaviour
 {
+    public static HashSet<Creature> includedCreatures = new();
+
     public static int count = 0;
     public static readonly float MAX_STAT = 130;
 
@@ -12,6 +14,8 @@ public class TeamBuilderButton : MonoBehaviour
     public Sprite MoveButton_DefenseType;
     public Sprite MoveButton_NeutralType;
 
+
+    public Image Background;
 
     public Image moveBackground1;
     public Image moveBackground2;
@@ -78,5 +82,16 @@ public class TeamBuilderButton : MonoBehaviour
     void Update()
     {
         
+    }
+
+
+    public bool included = false;
+    public void OnClick()
+    {
+        included = !included;
+        Background.color = included ? Color.gray : Color.white;
+        
+        if (included) includedCreatures.Add(creature);
+        else includedCreatures.Remove(creature);
     }
 }
