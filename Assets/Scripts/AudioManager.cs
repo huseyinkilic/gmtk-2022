@@ -7,7 +7,6 @@ public class AudioManager : MonoBehaviour
 
     public List<AudioClip> audioClips = new List<AudioClip>();
 
-    private Camera mainCamera;
     private AudioSource cameraAudioSource;
 
     public void Play(string name, bool isLooped)
@@ -25,7 +24,6 @@ public class AudioManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        mainCamera = Camera.main;
-        cameraAudioSource = mainCamera.GetComponent<AudioSource>();
+        cameraAudioSource = Camera.main.GetComponent<AudioSource>();
     }
 }
