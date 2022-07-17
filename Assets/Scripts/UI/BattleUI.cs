@@ -108,15 +108,13 @@ public class BattleUI : MonoBehaviour, IUI
 
     public void OnBattleClick()
     {
-        menuUI.SetActive(false);
-        actionsUI.SetActive(true);
+        DisplayActionsMenu();
         AudioManager.Instance.Play("BattleTheme", true);
     }
 
     public void OnSwapClick()
     {
-        menuUI.SetActive(false);
-        swapUI.SetActive(true);
+        DisplaySwapMenu();
         AudioManager.Instance.Play("LossTheme", false);
     }
 
@@ -130,9 +128,26 @@ public class BattleUI : MonoBehaviour, IUI
     public void OnBackClick()
     {
         menuUI.SetActive(true);
+        actionsUI.SetActive(false);
         swapUI.SetActive(false);
         statsUI.SetActive(false);
         AudioManager.Instance.Play("TitleTheme", true);
+    }
+
+    public void DisplayActionsMenu()
+    {
+        menuUI.SetActive(false);
+        actionsUI.SetActive(true);
+        swapUI.SetActive(false);
+        statsUI.SetActive(false);
+    }
+
+    public void DisplaySwapMenu()
+    {
+        menuUI.SetActive(false);
+        actionsUI.SetActive(false);
+        swapUI.SetActive(true);
+        statsUI.SetActive(false);
     }
 
     private void Start()
@@ -174,13 +189,13 @@ public class BattleUI : MonoBehaviour, IUI
         {   
             if (forceSwitchPendingP1)
             {
-                OnSwapClick();
+                DisplaySwapMenu();
                 // TODO: disable the exit button
                 forceSwitchPendingP1 = false;
             }
             if (forceSwitchPendingP2)
             {
-                OnSwapClick();
+                DisplaySwapMenu();
                 // TODO: disable the exit button
                 forceSwitchPendingP2 = false;
             }

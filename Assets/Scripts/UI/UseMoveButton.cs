@@ -20,6 +20,6 @@ public class UseMoveButton : MonoBehaviour
         TurnManager.Instance.SubmitAction(action);
 
         // return to the menu "Menu"
-        ui.OnBackClick();
+        //ui.OnBackClick();
     }
 }
