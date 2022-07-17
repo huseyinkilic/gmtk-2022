@@ -20,6 +20,6 @@ MonoBehaviour:
   type: 1
   allowedMoves:
   - Munch
-  - Paralysing sting
+  - Paralyzing sting
   - Dance
   - Crunch

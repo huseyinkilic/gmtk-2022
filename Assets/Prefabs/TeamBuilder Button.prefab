@@ -244,6 +244,7 @@ MonoBehaviour:
   MoveButton_AttackType: {fileID: 21300000, guid: e7b9bf9501ab03444aca61181a42c164, type: 3}
   MoveButton_DefenseType: {fileID: 21300000, guid: c4c34250145d02d408cc518ae8f091a2, type: 3}
   MoveButton_NeutralType: {fileID: 21300000, guid: 13842db9a92d4f94e871f7fb48057c34, type: 3}
+  Background: {fileID: 7830445140312883276}
   moveBackground1: {fileID: 6276121149747349794}
   moveBackground2: {fileID: 3070012762572402517}
   moveBackground3: {fileID: 5073515996043737173}
@@ -257,6 +258,8 @@ MonoBehaviour:
   attk: {fileID: 1390587904283981513}
   def: {fileID: 1390587904862845874}
   spd: {fileID: 1390587904269185291}
+  nameText: {fileID: 680534505277151383}
+  included: 0
 --- !u!1 &4266357298260202026
 GameObject:
   m_ObjectHideFlags: 0
@@ -1014,7 +1017,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4a8b36538b38cae48b55f742f48b5943, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d8cbe4751c5f0444a999dedcb2efdeb6, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
