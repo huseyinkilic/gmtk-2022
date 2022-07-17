@@ -138,6 +138,14 @@ public class BattleUI : MonoBehaviour, IUI
         AudioManager.Instance.Play("TitleTheme", true);
     }
 
+    public void OnBackFromActionsToMainClick()
+    {
+        menuUI.SetActive(true);
+        actionsUI.SetActive(false);
+        swapUI.SetActive(false);
+        statsUI.SetActive(false);
+    }
+
     public void DisplayActionsMenu()
     {
         menuUI.SetActive(false);
