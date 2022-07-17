@@ -517,6 +517,23 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
                     // no log since the log happens inside ApplyStatusCondition
                 };
+            case "change_type": // params: type
+                return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
+                {
+                    string type = parameters[0];
+                    
+                    string typeName = "";
+                    Creature.Type t;
+                    switch(type)
+                    {
+                        case "ATTACK": t=Creature.Type.ATTACK; typeName = "Attacking"; break;
+                        case "DEFENSE": t=Creature.Type.DEFEND; typeName = "Defensive"; break;
+                        case "NEUTRAL": t=Creature.Type.NEUTRAL; typeName = "Neutral"; break;
+                        default: return;
+                    }
+                    attackingCreature.state.currentType = t;
+                    ActionLogger.LogMessage($"Player {targetedCreature.state.team+1}'s {targetedCreature.state.definition.name}'s changed to type {typeName}!");
+                };
             default: return null;
         }
         //return null;
