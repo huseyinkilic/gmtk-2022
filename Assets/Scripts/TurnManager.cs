@@ -526,7 +526,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
         float ADRatio = CreatureController.GetAttackStat(attacker) / CreatureController.GetDefenseStat(target);
         float STAB = move.type == (Move.Type)attacker.currentType ? 1.5f : 1; // STAB = same type attack bonus
         float effectiveness = GetMatchup(move.type, target.currentType);
-        float critBonus = crit? 1.5f : 1f;
+        float critBonus = crit? 2f : 1f;
         return Mathf.FloorToInt(move.basePower * ADRatio * STAB * effectiveness * critBonus);
     }
 
