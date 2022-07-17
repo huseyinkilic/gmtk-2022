@@ -32,7 +32,10 @@ public class SimpleAI : IAI
 
     public PlayerAction ForceSwitch(int playerNum, GameState state)
     {
-        var switchingTo = state.playersTeams[playerNum].team.Where(c => c.currentDamage < c.definition.hp).First();
-        return ITurnManager.Instance.MakeSwitchAction(playerNum, switchingTo.indexOnTeam);
+        try { 
+            var switchingTo = state.playersTeams[playerNum].team.Where(c => c.currentDamage < c.definition.hp).First();
+            return ITurnManager.Instance.MakeSwitchAction(playerNum, switchingTo.indexOnTeam);
+        } catch { }
+        return ITurnManager.Instance.MakeSwitchAction(playerNum, 0);
     }
 }
