@@ -20,6 +20,7 @@ public class PlayerController
 
     public PlayerAction MakeSwitchAction(int switchToIndex)
     {
+        Debug.LogError($"MAKING SWITCH ACTION {switchToIndex}");
         return new PlayerAction()
         {
             team = this.teamNumber,

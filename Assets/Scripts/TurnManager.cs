@@ -138,7 +138,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
         battleMenu.SetActive(true);
     
         BattleUI.Instance.player2AI = new SimpleAI();
-        TurnManager.Instance.InitializePlayer(0, team);
+        TurnManager.Instance.InitializePlayer(0, team1);
     }
 
     //
@@ -188,8 +188,10 @@ public class TurnManager : MonoBehaviour, ITurnManager
     
     public PlayerAction MakeSwitchAction(int playerNum, int switchToIndex)
     {
+        Debug.LogError($"making action {playerNum} : {switchToIndex}");
         PlayerController player = players[playerNum];
         PlayerAction action = player.MakeSwitchAction(switchToIndex);
+        Debug.LogWarning($"SWITCHING TO INDEX {switchToIndex}");
         //SubmitPlayerAction(player, action);
         return action;
     }

@@ -25,6 +25,7 @@ public class SwapCreatureButton : MonoBehaviour
 
     public void MakeAndSubmitAction()
     {
+        Debug.LogError($"BUTTON HELLO {creatureIndex}");
         var action = TurnManager.Instance.MakeSwitchAction(team, creatureIndex);
         TurnManager.Instance.SubmitAction(action);
     
@@ -49,6 +50,8 @@ public class SwapCreatureButton : MonoBehaviour
             button.interactable = false;
             return;
         }   
+
+        Debug.LogWarning($"SWITCHING TO {switchTo.state.definition.name}");
 
         if (switchTo.state.indexOnTeam == creatureIndex) button.interactable = false;
         else button.interactable = TurnManager.Instance.GetPlayerCreatures(0)[creatureIndex].CanStillFight();
