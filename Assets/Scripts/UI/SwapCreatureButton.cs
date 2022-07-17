@@ -48,6 +48,7 @@ public class SwapCreatureButton : MonoBehaviour
         button.interactable = true;
         if (TurnManager.Instance.GetPlayerCreatures(0).Count <= creatureIndex) 
         {
+            Debug.LogError($"BASD BUUTTON {creatureIndex}");
             button.interactable = false;
             return;
         }   

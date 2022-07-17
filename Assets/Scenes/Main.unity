@@ -2157,7 +2157,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 319047068957356702, guid: 9b4db2f1e24df9d438566031bc4cf4fc, type: 3}
       propertyPath: creatureIndex
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 368901308272758526, guid: 9b4db2f1e24df9d438566031bc4cf4fc, type: 3}
       propertyPath: m_AnchorMax.y
@@ -2598,7 +2598,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 319047068957356702, guid: 9b4db2f1e24df9d438566031bc4cf4fc, type: 3}
       propertyPath: creatureIndex
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 368901308272758526, guid: 9b4db2f1e24df9d438566031bc4cf4fc, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6110,7 +6110,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 319047068957356702, guid: 9b4db2f1e24df9d438566031bc4cf4fc, type: 3}
       propertyPath: creatureIndex
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 368901308272758526, guid: 9b4db2f1e24df9d438566031bc4cf4fc, type: 3}
       propertyPath: m_AnchorMax.y
