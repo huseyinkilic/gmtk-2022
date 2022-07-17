@@ -19,8 +19,10 @@ public class Thing : MonoBehaviour
     public void Update()
     {
         var creature = TurnManager.Instance.GetActiveCreature(player);
-        hp.fillAmount = ((float)creature.state.currentDamage) / ((float)creature.state.definition.hp);
+        hp.fillAmount = 1f - ((float)creature.state.currentDamage) / ((float)creature.state.definition.hp);
         name.text = creature.state.definition.name;
+
+        Debug.LogError($"HP BARS {hp.fillAmount}  dsfd  {creature.state.currentDamage}");
         
         slp.SetActive(creature.state.status == CreatureController.StatusContidion.SLEEP);
         par.SetActive(creature.state.status == CreatureController.StatusContidion.PARALYZED);
