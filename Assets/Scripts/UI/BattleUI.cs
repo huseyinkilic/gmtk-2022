@@ -138,35 +138,7 @@ public class BattleUI : MonoBehaviour, IUI
     // UI Functions
     //
 
-    public void OnBattleClick()
-    {
-        DisplayActionsMenu();
-        AudioManager.Instance.Play("BattleTheme", true);
-    }
-
-    public void OnSwapClick()
-    {
-        DisplaySwapMenu();
-        AudioManager.Instance.Play("LossTheme", false);
-    }
-
-    public void OnStatsClick()
-    {
-        menuUI.SetActive(false);
-        statsUI.SetActive(true);
-        AudioManager.Instance.Play("VictoryTheme", false);
-    }
-
-    public void OnBackClick()
-    {
-        menuUI.SetActive(true);
-        actionsUI.SetActive(false);
-        swapUI.SetActive(false);
-        statsUI.SetActive(false);
-        AudioManager.Instance.Play("TitleTheme", true);
-    }
-
-    public void OnBackFromActionsToMainClick()
+    public void DisplayMainMenu()
     {
         menuUI.SetActive(true);
         actionsUI.SetActive(false);
@@ -190,13 +162,18 @@ public class BattleUI : MonoBehaviour, IUI
         statsUI.SetActive(false);
     }
 
-    private void Start()
+    public void DisplayStats()
     {
-        menuUI.SetActive(true);
+        menuUI.SetActive(false);
         actionsUI.SetActive(false);
         swapUI.SetActive(false);
-        statsUI.SetActive(false);
-        AudioManager.Instance.Play("TitleTheme", true);
+        statsUI.SetActive(true);
+    }
+
+    private void Start()
+    {
+        DisplayMainMenu();
+        AudioManager.Instance.Play("BattleTheme", true);
     }
 
     //
