@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a2fa3e5e3f289141b78b9ce7b8c2e79, type: 3}
-  m_Name: Slow
+  m_Name: Bait
   m_EditorClassIdentifier: 
-  name: Slow
-  id: Slow
+  name: Bait
+  id: Bait
   accuracy: 100
   basePower: 0
   delayTurns: 0
@@ -23,8 +23,5 @@ MonoBehaviour:
   - name: opponent_stat_debuff
     parameters:
     - 100
-    - SPEED
-    - 1
-  - name: change_type
-    parameters:
-    - NEUTRAL
+    - DEFENSE
+    - ATTACK

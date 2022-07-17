@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a2fa3e5e3f289141b78b9ce7b8c2e79, type: 3}
-  m_Name: Slow
+  m_Name: Munch
   m_EditorClassIdentifier: 
-  name: Slow
-  id: Slow
-  accuracy: 100
-  basePower: 0
+  name: Munch
+  id: Munch
+  accuracy: 80
+  basePower: 20
   delayTurns: 0
   priority: 0
-  type: 2
+  type: 1
   secondaryEffects:
-  - name: opponent_stat_debuff
+  - name: heal_percentage
     parameters:
     - 100
-    - SPEED
-    - 1
+    - 10
+    - 10
   - name: change_type
     parameters:
-    - NEUTRAL
+    - DEFENSE

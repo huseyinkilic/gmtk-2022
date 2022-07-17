@@ -10,21 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a2fa3e5e3f289141b78b9ce7b8c2e79, type: 3}
-  m_Name: Slow
+  m_Name: Peck
   m_EditorClassIdentifier: 
-  name: Slow
-  id: Slow
-  accuracy: 100
-  basePower: 0
+  name: Peck
+  id: Peck
+  accuracy: 85
+  basePower: 50
   delayTurns: 0
   priority: 0
-  type: 2
+  type: 0
   secondaryEffects:
-  - name: opponent_stat_debuff
-    parameters:
-    - 100
-    - SPEED
-    - 1
   - name: change_type
     parameters:
-    - NEUTRAL
+    - ATTACK
