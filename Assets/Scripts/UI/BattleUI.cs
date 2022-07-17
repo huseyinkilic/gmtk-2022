@@ -60,6 +60,16 @@ public class BattleUI : MonoBehaviour, IUI
         // TODO: make some coroutine that plays an animation for this effect and exits when the animation is over, and add it to pendingAnimations
     }
 
+    IEnumerator StatusEffectGainEffect(CreatureController creatureRecievingStatus, CreatureController.StatusContidion condition)
+    {
+        // enable the correct status icon
+
+        // start the status effect animation
+        // yeild return wait until the animation is done
+
+        yield break;
+    }
+
     //
     // Control functions
     //

@@ -365,7 +365,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
             foreach(SecondaryEffect secondaryEffect in action.moveTaken.secondaryEffects ?? new())
             {
                 SecondaryEffectHandler handler = GetSecondaryEffectHandler(secondaryEffect.name);
-                if (handler == null) continue;
+                if (handler == null) { Debug.LogError($"No secondary effect handler found for {secondaryEffect.name}.");  continue; }
 
                 handler.Invoke(currentState, action.targetCreature, action.activeCreature, damage, secondaryEffect.parameters);
             }

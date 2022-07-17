@@ -10,6 +10,7 @@ public class UseMoveButton : MonoBehaviour
     
     private BattleUI ui;
     private Button button;
+    public Text nameText;
 
     public void Start()
     {
@@ -40,5 +41,9 @@ public class UseMoveButton : MonoBehaviour
         button.GetComponent<Image>().sprite = s;
 
         // TODO: and now set the text
+        nameText.text = creature.state.knownMoves[moveIndex].name;
+        // descriptionText.text = ...
+        // accuracyText
+        // powerText
     }
 }

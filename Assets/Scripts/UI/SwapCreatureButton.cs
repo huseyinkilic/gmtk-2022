@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SwapCreatureButton : MonoBehaviour
 {
@@ -8,9 +9,11 @@ public class SwapCreatureButton : MonoBehaviour
     public int creatureIndex;
 
     private BattleUI ui;
+    private Button button;
     public void Start()
     {
         ui = Resources.FindObjectsOfTypeAll<BattleUI>()[0];
+        button = GetComponent<Button>();
     }
 
     public void MakeAndSubmitAction()
@@ -20,5 +23,12 @@ public class SwapCreatureButton : MonoBehaviour
     
         // return to the actions UI
         ui.OnBackClick();
+    }
+
+    public void UpdateMe(CreatureController creature)
+    {
+        if (!creature.CanStillFight()) button.interactable = false;
+
+        // TODO: update the hp bar
     }
 }
