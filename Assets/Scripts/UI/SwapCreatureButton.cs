@@ -19,6 +19,6 @@ public class SwapCreatureButton : MonoBehaviour
         TurnManager.Instance.SubmitAction(action);
     
         // return to the actions UI
-        ui.DisplayActionsMenu();
+        ui.OnBackClick();
     }
 }

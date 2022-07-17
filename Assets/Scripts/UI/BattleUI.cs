@@ -23,6 +23,10 @@ public class BattleUI : MonoBehaviour, IUI
     private bool forceSwitchPendingP1 = false;
     private bool forceSwitchPendingP2 = false;
 
+    public Sprite MoveButton_AttackType;
+    public Sprite MoveButton_DefenseType;
+    public Sprite MoveButton_NeutralType;
+
     private void Awake()
     {
         Instance = this;
