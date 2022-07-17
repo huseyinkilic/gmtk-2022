@@ -158,6 +158,7 @@ MonoBehaviour:
   accText: {fileID: 8407159196769812503}
   powerText: {fileID: 4139313940750607323}
   descriptionText: {fileID: 7144737046652991851}
+  i: {fileID: 360706154992788384}
 --- !u!1 &360706155048619881
 GameObject:
   m_ObjectHideFlags: 0

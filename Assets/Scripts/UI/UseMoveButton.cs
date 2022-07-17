@@ -17,6 +17,8 @@ public class UseMoveButton : MonoBehaviour
 
     public Text descriptionText;
 
+    public Image i;
+
     public void Awake()
     {
         ui = Resources.FindObjectsOfTypeAll<BattleUI>()[0];
@@ -46,7 +48,7 @@ public class UseMoveButton : MonoBehaviour
             case Move.Type.NEUTRAL: s = ui.MoveButton_NeutralType; break;
         }
 
-        button.GetComponent<Image>().sprite = s;
+        i.sprite = s;
 
         nameText.text = creature.state.knownMoves[moveIndex].name;
         accText.text = creature.state.knownMoves[moveIndex].accuracy + "";
