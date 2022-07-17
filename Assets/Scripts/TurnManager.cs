@@ -184,11 +184,13 @@ public class TurnManager : MonoBehaviour, ITurnManager
         };
 
         // if all players have been initialized, we're ready to go!
-        if (players.All(p => p != null)) IUI.Instance.TurnManagerReadyToRecieveInput();
-
-        // "swap in" the players' starting creatures
-        BattleUI.Instance.SwapActiveCreature(0, players[0].team[0]);
-        BattleUI.Instance.SwapActiveCreature(1, players[1].team[0]);
+        if (players.All(p => p != null)) 
+        {
+            IUI.Instance.TurnManagerReadyToRecieveInput();
+            // "swap in" the players' starting creatures
+            BattleUI.Instance.SwapActiveCreature(0, players[0].team[0]);
+            BattleUI.Instance.SwapActiveCreature(1, players[1].team[0]);
+        }
     }
 
     //
@@ -584,6 +586,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
         // first, make a roll against the luck. if this succeeds, then the roll as a whole is considered successful
         if (Random.value < relative*currentState.luckBalance*luckFactor) success = true;
+        if (success) ActionLogger.LogMessage($"LUCKY ROLL! Player {team+1}'s roll was an automatic success!");
 
         // if the luck roll failed, roll against positiveOutcomeChance, if this succeeds, then the roll as a whole is considered successful
         if (Random.value < positiveOutcomeChance) success = true;

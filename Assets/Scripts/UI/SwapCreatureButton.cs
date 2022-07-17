@@ -11,7 +11,7 @@ public class SwapCreatureButton : MonoBehaviour
 
     private BattleUI ui;
     private Button button;
-    public void Start()
+    public void Awake()
     {
         ui = Resources.FindObjectsOfTypeAll<BattleUI>()[0];
         button = GetComponent<Button>();

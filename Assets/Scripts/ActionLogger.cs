@@ -17,5 +17,6 @@ public class ActionLogger
     public static void LogMessage(string msg)
     {
         Debug.Log(msg);
+        ActionLogUI.Instance.AddLog(msg);
     }
 }
