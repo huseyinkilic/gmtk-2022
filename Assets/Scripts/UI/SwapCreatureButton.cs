@@ -23,7 +23,7 @@ public class SwapCreatureButton : MonoBehaviour
         TurnManager.Instance.SubmitAction(action);
     
         // return to the actions UI
-        ui.OnBackClick();
+        ui.DisplayMainMenu();
     }
 
     public void UpdateMe(CreatureController creature)
