@@ -99,6 +99,7 @@ public class BattleUI : MonoBehaviour, IUI
     // -1 means tie, 0 means player 1 won, 1 means player 2 won
     public void GameOver(int winningPlayer)
     {
+        ActionLogger.LogMessage($"Game over! Player {winningPlayer+1} won!");
     }
 
     //
@@ -173,12 +174,14 @@ public class BattleUI : MonoBehaviour, IUI
         {   
             if (forceSwitchPendingP1)
             {
-                // TODO: open switch menu
+                OnSwapClick();
+                // TODO: disable the exit button
                 forceSwitchPendingP1 = false;
             }
             if (forceSwitchPendingP2)
             {
-                // TODO: open switch menu
+                OnSwapClick();
+                // TODO: disable the exit button
                 forceSwitchPendingP2 = false;
             }
         }

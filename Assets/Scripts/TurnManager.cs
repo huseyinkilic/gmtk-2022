@@ -190,6 +190,17 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
     private void QueuePlayerAction(PlayerController player, PlayerAction action)
     {
+        // handle forced actions
+        if (player.pendingForcedSwitch && action.actionType == PlayerAction.ActionType.SWITCH)
+        {
+            ActionLogger.LogMessage($"Player {player.teamNumber + 1} is responding to a forced switch.");
+            HandleAction(action);
+            player.pendingForcedSwitch = false;
+            return;
+        }
+
+        // not a forced action, this action will take place at the start of the next turn
+
         nextTurnActions[player] = action;
         foreach(PlayerController p in players) if (nextTurnActions.ContainsKey(p)) Debug.LogWarning($"\tPlayer {p.teamNumber+1} is ready...");
         foreach(PlayerController p in players) if (!nextTurnActions.ContainsKey(p)) return; // if not all players have picked an action for next turn, end the function
@@ -274,9 +285,11 @@ public class TurnManager : MonoBehaviour, ITurnManager
         PlayerController player = players[action.team];
         SingleSidedFieldState playerFieldSideState = currentState.playersSideStates[action.team];
 
-        if (!action.activeCreature.CanStillFight()) // creature fainted due to earlier action or ApplyStartOfTurnEffects. Cancel this action
+        bool playerIsRespondingToAForcedSwitch = player.pendingForcedSwitch && action.actionType == PlayerAction.ActionType.SWITCH;
+        if (!action.activeCreature.CanStillFight() && !playerIsRespondingToAForcedSwitch) // creature fainted due to earlier action or ApplyStartOfTurnEffects. Cancel this action
         {
-            ActionLogger.LogMessage($"Player {action.activeCreature.state.team+1}'s {action.activeCreature.state.definition.name} fainted and can no longer battle!");
+            ActionLogger.LogMessage($"1 Player {action.activeCreature.state.team+1}'s {action.activeCreature.state.definition.name} fainted and can no longer battle!");
+            players[action.activeCreature.state.team].ForceSwitch();
             return;
         }
 
@@ -287,8 +300,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
             action.activeCreature.state.isActiveCreature = false;
             action.targetCreature.state.isActiveCreature = true;
                 
-            CreatureController switchFrom = player.team[action.targetCreature.state.indexOnTeam];
-            CreatureController switchTo   = player.team[action.activeCreature.state.indexOnTeam];
+            CreatureController switchFrom = player.team[action.activeCreature.state.indexOnTeam];
+            CreatureController switchTo   = player.team[action.targetCreature.state.indexOnTeam];
             // player.activeCreature = player.team[action.targetCreature.state.indexOnTeam]; // no longer neccessary
             switchFrom.state.isActiveCreature = false;
             switchTo.state.isActiveCreature = true;
@@ -339,7 +352,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
             if (!action.targetCreature.CanStillFight())
             {
-                ActionLogger.LogMessage($"Player {action.targetCreature.state.team+1}'s {action.targetCreature.state.definition.name} fainted and can no longer battle!");
+                ActionLogger.LogMessage($"2 Player {action.targetCreature.state.team+1}'s {action.targetCreature.state.definition.name} fainted and can no longer battle!");
                 // force the player to make a switch
                 players[action.targetCreature.state.team].ForceSwitch();
                 // TODO: await for the switch to happen??
@@ -364,7 +377,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
             // we check CanStillFight() again in case ApplyEndOfTurnEffects() caused the creature to faint
             if (!team.activeCreature.CanStillFight())
             {
-                ActionLogger.LogMessage($"Player {team.activeCreature.state.team+1}'s {team.activeCreature.state.definition.name} fainted and can no longer battle!");
+                ActionLogger.LogMessage($"3 Player {team.activeCreature.state.team+1}'s {team.activeCreature.state.definition.name} fainted and can no longer battle!");
                 // force the player to make a switch
                 players[action.activeCreature.state.team].ForceSwitch();
                 // TODO: await for the switch to happen??

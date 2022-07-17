@@ -10,8 +10,11 @@ public class PlayerController
     public List<CreatureController> team;
     public CreatureController activeCreature { get { return team.Where(creature => creature.state.isActiveCreature).FirstOrDefault(); } }
 
+    public bool pendingForcedSwitch = false;
+
     public void ForceSwitch() 
     { 
+        pendingForcedSwitch = true;
         IUI.Instance.ForceSwitch(this.teamNumber); 
     }
 
