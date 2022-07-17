@@ -150,6 +150,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
     public void SubmitAction(PlayerAction action)
     {
+        Debug.LogWarning($"Player action queued (player {action.team+1})");
         QueuePlayerAction(players[action.team], action);
     }
 
@@ -190,10 +191,12 @@ public class TurnManager : MonoBehaviour, ITurnManager
     private void QueuePlayerAction(PlayerController player, PlayerAction action)
     {
         nextTurnActions[player] = action;
+        foreach(PlayerController p in players) if (nextTurnActions.ContainsKey(p)) Debug.LogWarning($"\tPlayer {p.teamNumber+1} is ready...");
         foreach(PlayerController p in players) if (!nextTurnActions.ContainsKey(p)) return; // if not all players have picked an action for next turn, end the function
 
         RunTurn(nextTurnActions.Values.ToList());
-        nextTurnActions.Clear();
+        //Debug.LogWarning("clearing next turn actions 1");
+        //nextTurnActions.Clear(); // this line of code is haunted, I don't know what to tell you. It runs without the above RunTurn() line running. Uncomment at your own peril, we will not send extortionists to save you.
     }
 
     private void RunTurn(List<PlayerAction> playerActions)
@@ -260,6 +263,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
         // finalize
         CopyStateToStack();
         nextTurnActions.Clear();
+        Debug.LogWarning("clearing next turn actions 2");
         IUI.Instance.TurnManagerReadyToRecieveInput();
     }
 
@@ -323,7 +327,11 @@ public class TurnManager : MonoBehaviour, ITurnManager
             int damage = CalculateDamage(action.moveTaken, action.activeCreature.state, action.targetCreature.state);
             action.targetCreature.TakeDamage(damage);
             
-            ActionLogger.LogMessage($"{action.activeCreature.state.definition.name} hit its attack! It dealt {damage} damage to Player {action.targetCreature.state.team+1}'s {action.targetCreature.state.definition.name}");
+            string effectivenessText = "";
+            float matchup = GetMatchup(action.moveTaken.type, action.targetCreature.state.definition.type);
+            if (matchup > 1) effectivenessText = " It's super effective!";
+            if (matchup < 1) effectivenessText = " It's not very effective!";
+            ActionLogger.LogMessage($"{action.activeCreature.state.definition.name} hit its attack! It dealt {damage} damage to Player {action.targetCreature.state.team+1}'s {action.targetCreature.state.definition.name}.{effectivenessText}");
 
             if (!action.targetCreature.CanStillFight())
             {

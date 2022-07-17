@@ -64,6 +64,7 @@ public class BattleUI : MonoBehaviour, IUI
     // do not allow them to close it. once they've made a selection, call `callback(MakeMoveAction(...))`
     public void ForceSwitch(int player)
     {
+        Debug.LogWarning($"Forcing player {player+1} to switch creatures");
         // if this player is an AI, submit their switch action
         // otherwise, open the switch menu and disable the close button
 
@@ -84,6 +85,7 @@ public class BattleUI : MonoBehaviour, IUI
     // called when a turn is over and the turn manager is ready to recieve input. Also called before the first turn, once both players have been initialized
     public void TurnManagerReadyToRecieveInput()
     {
+        Debug.LogWarning("Turn manager is ready");
         // the turn manager has 
 
         // if there's an AI for either player, submit their move now
