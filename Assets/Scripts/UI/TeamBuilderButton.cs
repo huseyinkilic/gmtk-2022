@@ -66,6 +66,8 @@ public class TeamBuilderButton : MonoBehaviour
         spd.value = (float)creature.speed / MAX_STAT;
 
         nameText.text = creature.name;
+
+        creaturePic.sprite = creature.sprite;
     }
 
     Sprite GetSpriteForButton(Move.Type type)
