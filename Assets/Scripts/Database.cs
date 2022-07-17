@@ -15,7 +15,8 @@ public class Database : MonoBehaviour
     public void Start()
     {
         Instance = this;
-        moveDefinitions.ForEach(move => movesByID[move.id] = move); 
+        moveDefinitions.ForEach(move => { if (move != null) movesByID[move.id] = move; }); 
+        creatureDefinitions = creatureDefinitions.Where(c => c != null).ToList();
         creatureDefinitions.Sort((a, b) => a.name.CompareTo(b.name));
     }
 
