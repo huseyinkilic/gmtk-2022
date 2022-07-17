@@ -11,12 +11,12 @@ public class ActionLogUI : MonoBehaviour
 
     private float currentY = -30;
 
-    private Transform parentTo;
+    public Transform parentTo;
 
     // Start is called before the first frame update
     void Awake()
     {
-        parentTo = this.transform.GetChild(0);   
+        //parentTo = this.transform.GetChild(0);   
         Instance = this;
     }
 
