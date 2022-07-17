@@ -3313,9 +3313,9 @@ MonoBehaviour:
   actionsUI: {fileID: 288946823}
   swapUI: {fileID: 2035901373}
   statsUI: {fileID: 450829761}
-  MoveButton_AttackType: {fileID: 0}
-  MoveButton_DefenseType: {fileID: 0}
-  MoveButton_NeutralType: {fileID: 0}
+  MoveButton_AttackType: {fileID: 21300000, guid: e7b9bf9501ab03444aca61181a42c164, type: 3}
+  MoveButton_DefenseType: {fileID: 21300000, guid: c4c34250145d02d408cc518ae8f091a2, type: 3}
+  MoveButton_NeutralType: {fileID: 21300000, guid: 13842db9a92d4f94e871f7fb48057c34, type: 3}
   moveButtons:
   - {fileID: 2038121741}
   - {fileID: 704841339}
