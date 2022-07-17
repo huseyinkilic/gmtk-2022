@@ -50,7 +50,6 @@ public class BattleUI : MonoBehaviour, IUI
         // if no animation desired, make a coroutine that switches the creature sprite and immediately exits
     //    pendingAnimations.Add(SwapActiveCreatureAnimation(team, switchTo));
         
-        Debug.LogError($"switch play er {team}");
         if (team == 0)
         {
             foreach(var moveButton in moveButtons) moveButton.HandleSwitchIn(switchTo);

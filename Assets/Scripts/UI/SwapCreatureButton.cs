@@ -25,7 +25,7 @@ public class SwapCreatureButton : MonoBehaviour
 
     public void MakeAndSubmitAction()
     {
-        Debug.LogError($"BUTTON HELLO {creatureIndex}");
+        
         var action = TurnManager.Instance.MakeSwitchAction(team, creatureIndex);
         TurnManager.Instance.SubmitAction(action);
     
@@ -48,7 +48,7 @@ public class SwapCreatureButton : MonoBehaviour
         button.interactable = true;
         if (TurnManager.Instance.GetPlayerCreatures(0).Count <= creatureIndex) 
         {
-            Debug.LogError($"BASD BUUTTON {creatureIndex}");
+            
             button.interactable = false;
             return;
         }   
