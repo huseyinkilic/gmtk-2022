@@ -2175,6 +2175,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -25
       objectReference: {fileID: 0}
+    - target: {fileID: 1217141975047385602, guid: 9b4db2f1e24df9d438566031bc4cf4fc, type: 3}
+      propertyPath: creatureIndex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4513630064320509774, guid: 9b4db2f1e24df9d438566031bc4cf4fc, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -2282,7 +2286,7 @@ PrefabInstance:
     - target: {fileID: 4513630065090273824, guid: 9b4db2f1e24df9d438566031bc4cf4fc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 628492967}
+      objectReference: {fileID: 0}
     - target: {fileID: 4513630065090273824, guid: 9b4db2f1e24df9d438566031bc4cf4fc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -2498,17 +2502,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4513630065631333460, guid: 9b4db2f1e24df9d438566031bc4cf4fc, type: 3}
   m_PrefabInstance: {fileID: 628492965}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &628492967 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1217141975047385602, guid: 9b4db2f1e24df9d438566031bc4cf4fc, type: 3}
-  m_PrefabInstance: {fileID: 628492965}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ebebd9ffeb548e4d8dfbd0aae27b90f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &628492968 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 319047068957356702, guid: 9b4db2f1e24df9d438566031bc4cf4fc, type: 3}
