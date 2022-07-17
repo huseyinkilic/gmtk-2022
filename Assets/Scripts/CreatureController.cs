@@ -50,16 +50,32 @@ public class CreatureController
     public void ApplyEndOfTurnEffects()
     {
         if (state.status == StatusContidion.BURN || state.status == StatusContidion.POISONED) TakeDamage(state.definition.hp/16f);
+
+        if (state.status == StatusContidion.BURN) ActionLogger.LogMessage($"Player {state.team+1}'s {state.definition.name} took {state.definition.hp/16f} damage from its burn!");
+        if (state.status == StatusContidion.POISONED) ActionLogger.LogMessage($"Player {state.team+1}'s {state.definition.name} took {state.definition.hp/16f} damage from poison!");
     }
 
     public void ApplyStartOfTurnEffects()
     {
         // determine paralyzed / sleep wakeup
-        if (state.status == StatusContidion.PARALYZED) state.movesDisabled = !TurnManager.Instance.MakeBooleanRoll(0.75f, state.team);
+        if (state.status == StatusContidion.PARALYZED) 
+        {  
+            state.movesDisabled = !TurnManager.Instance.MakeBooleanRoll(0.75f, state.team);
+            if (state.movesDisabled) ActionLogger.LogMessage($"Player {state.team+1}'s {state.definition.name} flinched due to paralysis and will not move this turn!");
+        }
+
         if (state.status == StatusContidion.SLEEP)
         {
-             if (state.turnsSleepingFor <= 0) state.status = StatusContidion.NONE;
-             else state.movesDisabled = true;
+            if (state.turnsSleepingFor <= 0) 
+            { 
+                state.status = StatusContidion.NONE;
+                ActionLogger.LogMessage($"Player {state.team+1}'s {state.definition.name} woke up!");
+            }
+            else 
+            {
+                state.movesDisabled = true;
+                ActionLogger.LogMessage($"Player {state.team+1}'s {state.definition.name} is fast asleep!");
+            }
         }
     }
 
@@ -70,6 +86,15 @@ public class CreatureController
         if (condition == StatusContidion.SLEEP) state.turnsSleepingFor = (MAX_SLEEP_TURNS+1)-TurnManager.Instance.MakeDiceRoll(state.team, 1, MAX_SLEEP_TURNS);
         state.status = condition;
         IUI.Instance.PlayStatusEffectGainEffect(this, condition);
+
+        // log
+        string conditionMessage = "";
+        if (condition == StatusContidion.SLEEP) conditionMessage = "fell asleep";
+        if (condition == StatusContidion.POISONED) conditionMessage = "was poisoned";
+        if (condition == StatusContidion.PARALYZED) conditionMessage = "was paralyzed";
+        if (condition == StatusContidion.BURN) conditionMessage = "was burned";
+        if (condition == StatusContidion.BURN) conditionMessage = "gained a status condition";
+        ActionLogger.LogMessage($"Player {state.team+1}'s {state.definition.name} {conditionMessage}!");
     }
 
     public void TakeDamage(float damage) { TakeDamage(Mathf.FloorToInt(damage)); }
@@ -77,6 +102,7 @@ public class CreatureController
     {
         state.currentDamage += damage;
         IUI.Instance.PlayDamageEffect(this);
+        ActionLogger.LogMessage($"Player {state.team+1}'s {state.definition.name} took {damage} damage!");
     }
     
     public static float BuffLevelToMultiplier(int level)

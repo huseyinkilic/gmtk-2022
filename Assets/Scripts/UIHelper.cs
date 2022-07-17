@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static CreatureController;
 
+// Misnamed, this is the debug helper
 public class UIHelper : MonoBehaviour
 {
     void Start()
@@ -23,7 +24,7 @@ public class UIHelper : MonoBehaviour
                 // definition, knownMoves
                 team[j] = new CreatureState()
                 {
-                    definition = creatures[j], // just use the first 3 creatures listed in the database
+                    definition = creatures[creatures.Count-1-j], // just use the last 3 creatures listed in the database (test creatures)
                     knownMoves = new Move[]
                     {
                         Database.Instance.MoveFromID(creatures[j].allowedMoves[0]), // just use the first 4 allowable moves

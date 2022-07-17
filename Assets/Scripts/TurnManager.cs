@@ -200,6 +200,9 @@ public class TurnManager : MonoBehaviour, ITurnManager
     {
         // increment the turn counter
         currentState.turnNumber++;
+        
+        ActionLogger.LogMessage($"==== TURN {currentState.turnNumber} ====");
+        ActionLogger.LogMessage($"Luck is {Mathf.FloorToInt(Mathf.Abs(currentState.luckBalance*100f))}% in Player {(currentState.luckBalance >= 0 ? 1 : 2)}'s favor.");
 
         // apply pendingMoves that should activate this turn
         var pendingActionIter = pendingActions.ToList();
@@ -265,7 +268,11 @@ public class TurnManager : MonoBehaviour, ITurnManager
         PlayerController player = players[action.team];
         SingleSidedFieldState playerFieldSideState = currentState.playersSideStates[action.team];
 
-        if (!action.activeCreature.CanStillFight()) return; // creature fainted due to earlier action or ApplyStartOfTurnEffects. Cancel this action
+        if (!action.activeCreature.CanStillFight()) // creature fainted due to earlier action or ApplyStartOfTurnEffects. Cancel this action
+        {
+            ActionLogger.LogMessage($"Player {action.activeCreature.state.team+1}'s {action.activeCreature.state.definition.name} fainted and can no longer battle!");
+            return;
+        }
 
         if (action.actionType == PlayerAction.ActionType.SWITCH)
         {
@@ -280,11 +287,18 @@ public class TurnManager : MonoBehaviour, ITurnManager
                 
             ApplySwapEffects(switchFrom, switchTo, currentState.fieldState, playerFieldSideState);
             IUI.Instance.SwapActiveCreature(player.teamNumber, switchTo);
+            ActionLogger.LogMessage($"Player {player.teamNumber + 1} swapped from {switchFrom.state.definition.name} to {switchTo.state.definition.name}");
         } 
         else
         {
+            ActionLogger.LogMessage($"Player {player.teamNumber + 1}'s {action.activeCreature.state.definition.name} used {action.moveTaken.name}");
+
             // move
-            if (action.activeCreature.state.movesDisabled) return; // if the pokemon flinched or something
+            if (action.activeCreature.state.movesDisabled) // if the pokemon flinched or something
+            { 
+                ActionLogger.LogMessage($"{action.activeCreature.state.definition.name} was unable to move!");
+                return; 
+            } 
 
             // check to see if this move should be pending
             if (action.moveTaken.delayTurns > 0)
@@ -299,14 +313,21 @@ public class TurnManager : MonoBehaviour, ITurnManager
             // accuracy roll
 
             var moveHits = MakeBooleanRoll((float)action.moveTaken.accuracy/100f, action.team);
-            if (!moveHits) return; // move does not hit, skip damage calc and do not apply secondary effects
+            if (!moveHits) // move does not hit, skip damage calc and do not apply secondary effects
+            {
+                ActionLogger.LogMessage($"{action.activeCreature.state.definition.name} missed its attack!");
+                return;
+            }
 
             // damage
             int damage = CalculateDamage(action.moveTaken, action.activeCreature.state, action.targetCreature.state);
             action.targetCreature.TakeDamage(damage);
+            
+            ActionLogger.LogMessage($"{action.activeCreature.state.definition.name} hit its attack! It dealt {damage} damage to Player {action.targetCreature.state.team+1}'s {action.targetCreature.state.definition.name}");
 
             if (!action.targetCreature.CanStillFight())
             {
+                ActionLogger.LogMessage($"Player {action.targetCreature.state.team+1}'s {action.targetCreature.state.definition.name} fainted and can no longer battle!");
                 // force the player to make a switch
                 players[action.targetCreature.state.team].ForceSwitch();
                 // TODO: await for the switch to happen??
@@ -331,6 +352,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
             // we check CanStillFight() again in case ApplyEndOfTurnEffects() caused the creature to faint
             if (!team.activeCreature.CanStillFight())
             {
+                ActionLogger.LogMessage($"Player {team.activeCreature.state.team+1}'s {team.activeCreature.state.definition.name} fainted and can no longer battle!");
                 // force the player to make a switch
                 players[action.activeCreature.state.team].ForceSwitch();
                 // TODO: await for the switch to happen??
@@ -354,7 +376,10 @@ public class TurnManager : MonoBehaviour, ITurnManager
                     if (!success) return;
 
                     float percentageRolled = MakeFloatRoll(attackingCreature.state.team, minPercent, maxPercent);
-                    attackingCreature.TakeDamage(-attackingCreature.state.definition.hp*percentageRolled);
+                    int healFor = Mathf.FloorToInt(attackingCreature.state.definition.hp*percentageRolled);
+                    attackingCreature.TakeDamage(-healFor);
+
+                    ActionLogger.LogMessage($"Player {attackingCreature.state.team+1}'s {attackingCreature.state.definition.name} healed {healFor} hp!");
                 };
             case "heal_value": // params: successChance, minValue, maxValue
                 return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
@@ -368,12 +393,17 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
                     int valueRolled = MakeDiceRoll(attackingCreature.state.team, minValue, maxValue);
                     attackingCreature.TakeDamage(-valueRolled);
+                    
+                    ActionLogger.LogMessage($"Player {attackingCreature.state.team+1}'s {attackingCreature.state.definition.name} healed {valueRolled} hp!");
                 };
             case "heal_damage_dealt": // params: percentageOfDamageDealtConvertedToHP
                 return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
                 {
                     float percentageOfDamageDealtConvertedToHP = float.Parse(parameters[0])/100f;
-                    attackingCreature.TakeDamage(-damageDealt*percentageOfDamageDealtConvertedToHP);
+                    int healFor = Mathf.FloorToInt(damageDealt*percentageOfDamageDealtConvertedToHP);
+                    attackingCreature.TakeDamage(-healFor);
+                    
+                    ActionLogger.LogMessage($"Player {attackingCreature.state.team+1}'s {attackingCreature.state.definition.name} healed {healFor} hp!");
                 };
             case "self_stat_buff": // params: successChance, stat name, magnitude of buff (can be negative)
                 return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
@@ -387,11 +417,22 @@ public class TurnManager : MonoBehaviour, ITurnManager
                     
                     switch(stat)
                     {
-                        case "ATTACK": attackingCreature.state.attackBuffLevel += levels; break;
-                        case "DEFENSE": attackingCreature.state.defenseBuffLevel += levels; break;
-                        case "SPEED": attackingCreature.state.speedBuffLevel += levels; break;
+                        case "ATTACK": 
+                            if(attackingCreature.state.attackBuffLevel < -6 || attackingCreature.state.attackBuffLevel > 6) return; 
+                            attackingCreature.state.attackBuffLevel += levels; 
+                            break;
+                        case "DEFENSE": 
+                            if(attackingCreature.state.defenseBuffLevel < -6 || attackingCreature.state.defenseBuffLevel > 6) return; 
+                            attackingCreature.state.defenseBuffLevel += levels; 
+                            break;
+                        case "SPEED": 
+                            if(attackingCreature.state.speedBuffLevel < -6 || attackingCreature.state.speedBuffLevel > 6) return;
+                            attackingCreature.state.speedBuffLevel += levels; 
+                            break;
                     }
                     IUI.Instance.PlayStatBuffEffect(attackingCreature, stat, levels);
+                    
+                    ActionLogger.LogMessage($"Player {attackingCreature.state.team+1}'s {attackingCreature.state.definition.name}'s {stat} {(levels >= 0 ? "rose" : "fell")} by {levels}!");
                 };
             case "opponent_stat_debuff": // params: chance, statname, magnitude of debuff (can be negative)
                 return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
@@ -405,11 +446,22 @@ public class TurnManager : MonoBehaviour, ITurnManager
                     
                     switch(stat)
                     {
-                        case "ATTACK": targetedCreature.state.attackBuffLevel += levels; break;
-                        case "DEFENSE": targetedCreature.state.defenseBuffLevel += levels; break;
-                        case "SPEED": targetedCreature.state.speedBuffLevel += levels; break;
+                        case "ATTACK": 
+                            if(targetedCreature.state.attackBuffLevel < -6 || targetedCreature.state.attackBuffLevel > 6) return; 
+                            targetedCreature.state.attackBuffLevel += levels; 
+                            break;
+                        case "DEFENSE": 
+                            if(targetedCreature.state.defenseBuffLevel < -6 || targetedCreature.state.defenseBuffLevel > 6) return; 
+                            targetedCreature.state.defenseBuffLevel += levels; 
+                            break;
+                        case "SPEED": 
+                            if(targetedCreature.state.speedBuffLevel < -6 || targetedCreature.state.speedBuffLevel > 6) return;
+                            targetedCreature.state.speedBuffLevel += levels; 
+                            break;
                     }
-                    IUI.Instance.PlayStatBuffEffect(attackingCreature, stat, levels);
+                    IUI.Instance.PlayStatBuffEffect(targetedCreature, stat, levels);
+
+                    ActionLogger.LogMessage($"Player {targetedCreature.state.team+1}'s {targetedCreature.state.definition.name}'s {stat} {(levels >= 0 ? "rose" : "fell")} by {levels}!");
                 };
             case "opponent_status_condition": // params: chance, condition
                 return (state, targetedCreature, attackingCreature, damageDealt, parameters) =>
@@ -427,6 +479,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
                         case "POISON": targetedCreature.ApplyStatusCondition(StatusContidion.POISONED); break;
                         case "PARALYSIS": targetedCreature.ApplyStatusCondition(StatusContidion.PARALYZED); break;
                     }
+
+                    // no log since the log happens inside ApplyStatusCondition
                 };
             default: return null;
         }
