@@ -1205,7 +1205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
-  moveIndex: 0
+  moveIndex: 3
   nameText: {fileID: 0}
 --- !u!114 &509990340
 MonoBehaviour:
@@ -1612,7 +1612,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
-  moveIndex: 0
+  moveIndex: 1
   nameText: {fileID: 0}
 --- !u!114 &704841340
 MonoBehaviour:
@@ -3394,7 +3394,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
-  moveIndex: 0
+  moveIndex: 2
   nameText: {fileID: 0}
 --- !u!114 &1913600496
 MonoBehaviour:
