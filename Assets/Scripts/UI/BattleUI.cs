@@ -30,6 +30,9 @@ public class BattleUI : MonoBehaviour, IUI
     public List<UseMoveButton> moveButtons;
     public List<SwapCreatureButton> switchButtons;
 
+    public Image creatureP1;
+    public Image creatureP2;
+
     private void Awake()
     {
         Instance = this;
@@ -58,6 +61,7 @@ public class BattleUI : MonoBehaviour, IUI
 
         // TODO: yield return wait for swap animation to complete
         // TODO: switch the sprite of team's creature
+
 
         yield break;
     }
@@ -119,6 +123,11 @@ public class BattleUI : MonoBehaviour, IUI
     {
         Debug.LogWarning("Turn manager is ready");
         // the turn manager has 
+
+        for(int q = 0; q < 3; q++)
+        {
+            switchButtons[q].UpdateMe(TurnManager.Instance.players[0].team[q]);
+        }
 
         // if there's an AI for either player, submit their move now
         if (player2AI != null)

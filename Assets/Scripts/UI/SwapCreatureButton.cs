@@ -11,6 +11,12 @@ public class SwapCreatureButton : MonoBehaviour
 
     private BattleUI ui;
     private Button button;
+
+    public Image hp;
+    public Text name;
+    public Image sprite;
+
+
     public void Awake()
     {
         ui = Resources.FindObjectsOfTypeAll<BattleUI>()[0];
@@ -29,8 +35,11 @@ public class SwapCreatureButton : MonoBehaviour
     public void UpdateMe(CreatureController creature)
     {
         if (!creature.CanStillFight()) button.interactable = false;
+        if (creature.state == null || creature.state.definition == null) return;
 
-        // TODO: update the hp bar
+        hp.fillAmount = 1f - ((float)creature.state.currentDamage) / ((float)creature.state.definition.hp);
+        sprite.sprite = creature.state.definition.sprite;
+        name.text = creature.state.definition.name;
     }
 
     public void HandleSwitchIn(CreatureController switchTo)

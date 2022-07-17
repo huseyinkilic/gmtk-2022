@@ -586,6 +586,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   team: 0
   creatureIndex: 0
+  hp: {fileID: 0}
+  name: {fileID: 0}
+  sprite: {fileID: 0}
 --- !u!1 &4513630065118313073
 GameObject:
   m_ObjectHideFlags: 0
@@ -1046,6 +1049,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   team: 0
   creatureIndex: 0
+  hp: {fileID: 7621191424633072977}
+  name: {fileID: 4513630065541601679}
+  sprite: {fileID: 4513630064917365929}
 --- !u!1 &4513630065975366346
 GameObject:
   m_ObjectHideFlags: 0
@@ -1258,7 +1264,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0.815
+  m_FillAmount: 0.811
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
