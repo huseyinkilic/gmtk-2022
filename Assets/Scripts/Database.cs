@@ -12,7 +12,8 @@ public class Database : MonoBehaviour
     [SerializeField] private List<Move> moveDefinitions;
     [SerializeField] private List<Creature> creatureDefinitions;
 
-    public void Start()
+    public Dictionary<string, Sprite> creatureSprites;
+    public void Awake()
     {
         Instance = this;
         moveDefinitions.ForEach(move => { if (move != null) movesByID[move.id] = move; }); 
