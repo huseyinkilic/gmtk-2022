@@ -261,6 +261,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
         else if (player2Lost)           IUI.Instance.GameOver(ITurnManager.PLAYER_1);
 
         // finalize
+        ActionLogger.LogMessage($"Luck is now {Mathf.FloorToInt(Mathf.Abs(currentState.luckBalance*100f))}% in Player {(currentState.luckBalance >= 0 ? 1 : 2)}'s favor.");
+
         CopyStateToStack();
         nextTurnActions.Clear();
         Debug.LogWarning("clearing next turn actions 2");
@@ -288,7 +290,9 @@ public class TurnManager : MonoBehaviour, ITurnManager
             CreatureController switchFrom = player.team[action.targetCreature.state.indexOnTeam];
             CreatureController switchTo   = player.team[action.activeCreature.state.indexOnTeam];
             // player.activeCreature = player.team[action.targetCreature.state.indexOnTeam]; // no longer neccessary
-                
+            switchFrom.state.isActiveCreature = false;
+            switchTo.state.isActiveCreature = true;
+
             ApplySwapEffects(switchFrom, switchTo, currentState.fieldState, playerFieldSideState);
             IUI.Instance.SwapActiveCreature(player.teamNumber, switchTo);
             ActionLogger.LogMessage($"Player {player.teamNumber + 1} swapped from {switchFrom.state.definition.name} to {switchTo.state.definition.name}");
