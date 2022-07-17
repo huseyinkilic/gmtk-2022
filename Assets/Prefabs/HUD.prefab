@@ -163,6 +163,7 @@ GameObject:
   - component: {fileID: 3843197640275588719}
   - component: {fileID: 3843197640275588705}
   - component: {fileID: 3843197640275588704}
+  - component: {fileID: 5128659922029832549}
   m_Layer: 5
   m_Name: HUD
   m_TagString: Untagged
@@ -229,6 +230,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5128659922029832549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3843197640275588718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3268d69d94b57494b83016ec70064cdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hp: {fileID: 1282147802799468428}
+  name: {fileID: 6327857014120892931}
+  slp: {fileID: 2828495432919863590}
+  par: {fileID: 2487075981638075019}
+  poi: {fileID: 8743923959138439353}
+  bur: {fileID: 7431926134450210702}
+  player: 0
 --- !u!1 &4333174639229866346
 GameObject:
   m_ObjectHideFlags: 0
@@ -691,6 +711,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8d287a1d7b01b3540bb8baa47e451bfa, type: 3}
+--- !u!114 &1282147802799468428 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6296115402669776510, guid: 8d287a1d7b01b3540bb8baa47e451bfa, type: 3}
+  m_PrefabInstance: {fileID: 5092253120060699122}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &9013508612922756131 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4304662138757643729, guid: 8d287a1d7b01b3540bb8baa47e451bfa, type: 3}

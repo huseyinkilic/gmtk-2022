@@ -129,6 +129,9 @@ public class BattleUI : MonoBehaviour, IUI
             switchButtons[q].UpdateMe(TurnManager.Instance.players[0].team[q]);
         }
 
+        creatureP1.sprite = TurnManager.Instance.GetActiveCreature(0).state.definition.sprite;
+        creatureP2.sprite = TurnManager.Instance.GetActiveCreature(1).state.definition.sprite;
+
         // if there's an AI for either player, submit their move now
         if (player2AI != null)
         {
@@ -137,10 +140,15 @@ public class BattleUI : MonoBehaviour, IUI
         }
     }
 
+
+    public GameObject winCanvas;
+    public GameObject loseCanvas;
     // -1 means tie, 0 means player 1 won, 1 means player 2 won
     public void GameOver(int winningPlayer)
     {
         ActionLogger.LogMessage($"Game over! Player {winningPlayer+1} won!");
+        winCanvas.SetActive(winningPlayer == 0);
+        loseCanvas.SetActive(winningPlayer != 0);
     }
 
     //
