@@ -12,7 +12,7 @@ public class UseMoveButton : MonoBehaviour
     private Button button;
     public Text nameText;
 
-    public void Start()
+    public void Awake()
     {
         ui = Resources.FindObjectsOfTypeAll<BattleUI>()[0];
         button = GetComponent<Button>();
@@ -32,6 +32,9 @@ public class UseMoveButton : MonoBehaviour
     {
         Sprite s = null;
 
+        if (ui == null) ui = BattleUI.Instance;
+        Debug.LogWarning($"ui object found {ui}");
+        
         switch(creature.state.knownMoves[moveIndex].type){
             case Move.Type.ATTACK: s = ui.MoveButton_AttackType; break;
             case Move.Type.DEFEND: s = ui.MoveButton_DefenseType; break;
@@ -41,7 +44,7 @@ public class UseMoveButton : MonoBehaviour
         button.GetComponent<Image>().sprite = s;
 
         // TODO: and now set the text
-        nameText.text = creature.state.knownMoves[moveIndex].name;
+        // nameText.text = creature.state.knownMoves[moveIndex].name;
         // descriptionText.text = ...
         // accuracyText
         // powerText
