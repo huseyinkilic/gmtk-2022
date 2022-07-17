@@ -46,7 +46,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
         public int turnNumber;
 
         public float luckBalance; // positive means in favor of player1, negative means in favor of player2
-        public TeamState[] playersTeams; // will be set in the Initialize function
+        public TeamState[] playersTeams = new TeamState[2]; // will be set in the Initialize function
 
         public FieldState fieldState; // stub, in case we want to add this
         public SingleSidedFieldState[] playersSideStates = new SingleSidedFieldState[2]; // stub, in case we want to add this
@@ -155,7 +155,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
     public void InitializePlayer(int playerNum, CreatureState[] creatures)
     {
-        if (currentState.playersTeams == null) currentState.playersTeams = new TeamState[2];
+        if (currentState.playersTeams == null || currentState.playersTeams.Length < 2) currentState.playersTeams = new TeamState[2];
 
         // finish initializing the creatures' states
         for (var i = 0; i < creatures.Length; i++)
@@ -584,7 +584,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
     private void CopyStateToStack()
     {
-        previousStates.Add(DeepCopy(currentState));
+        // TODO: disabled this function. we don't need it for any moves currently planned and deep copying stuff is just such a pain
+        //previousStates.Add(DeepCopy(currentState));
     }
 
     // https://stackoverflow.com/a/11336951/9643841s
