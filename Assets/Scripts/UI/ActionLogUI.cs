@@ -25,8 +25,7 @@ public class ActionLogUI : MonoBehaviour
     public void AddLog(string msg)
     {
         bool isAtBottom = scrollRect.normalizedPosition.y <= 0.00001; // basically "is equal to 0"
-        Debug.LogError($"vert norm {scrollRect.verticalNormalizedPosition}");
-
+        
         GameObject logText = Instantiate(textPrefab);
         logText.GetComponent<Text>().text = msg;
         logText.transform.parent = parentTo;
@@ -37,7 +36,6 @@ public class ActionLogUI : MonoBehaviour
         if (isAtBottom)
         {
             // https://stackoverflow.com/a/47613689/9643841
-            Debug.LogError("scrolling to bottom");
             Canvas.ForceUpdateCanvases();
 
             parentTo.GetComponent<VerticalLayoutGroup>().CalculateLayoutInputVertical() ;
