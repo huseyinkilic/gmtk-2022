@@ -206,6 +206,13 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
     public void SubmitAction(PlayerAction action)
     {
+        if (players[action.team].pendingForcedSwitch && action.actionType == PlayerAction.ActionType.SWITCH)
+        {
+            // if this is a response to a forced switch, handle the action immediately
+            HandleAction(action);
+            return;
+        }
+
         Debug.LogWarning($"Player action queued (player {action.team+1})");
         action.speed = action.activeCreature.GetSpeed(currentState.fieldState, /*currentState.playersSideStates[action.team]*/ null);
         QueuePlayerAction(players[action.team], action);
@@ -268,13 +275,18 @@ public class TurnManager : MonoBehaviour, ITurnManager
         foreach(PlayerController p in players) if (nextTurnActions.ContainsKey(p)) Debug.LogWarning($"\tPlayer {p.teamNumber+1} is ready...");
         foreach(PlayerController p in players) if (!nextTurnActions.ContainsKey(p)) return; // if not all players have picked an action for next turn, end the function
 
-        RunTurn(nextTurnActions.Values.ToList());
+        BattleUI.Instance.currentTurn = RunTurn();
+
+        //RunTurn(nextTurnActions.Values.ToList());
+
         //Debug.LogWarning("clearing next turn actions 1");
         //nextTurnActions.Clear(); // this line of code is haunted, I don't know what to tell you. It runs without the above RunTurn() line running. Uncomment at your own peril, we will not send extortionists to save you.
     }
 
-    private void RunTurn(List<PlayerAction> playerActions)
+    public IEnumerator RunTurn()
     {
+        var playerActions = nextTurnActions.Values.ToList();
+
         // increment the turn counter
         currentState.turnNumber++;
         
@@ -324,6 +336,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
         for(int i = 0; i < playerActions.Count; i++)
         {
             HandleAction(playerActions[i]);
+            yield return false;
         }
 
         // determine if the game is over
@@ -340,6 +353,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
         nextTurnActions.Clear();
         Debug.LogWarning("clearing next turn actions 2");
         IUI.Instance.TurnManagerReadyToRecieveInput();
+
+        yield return true;
     }
 
     public void HandleAction(PlayerAction action)

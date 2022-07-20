@@ -46,9 +46,6 @@ public class BattleUI : MonoBehaviour, IUI
     // change the sprite shown for "team" to the sprite corresponding to "switchTo"
     public void SwapActiveCreature(int team, CreatureController switchTo)
     {
-        // TODO: make some coroutine that plays an animation for this effect and exits when the animation is over, and add it to pendingAnimations
-        // if no animation desired, make a coroutine that switches the creature sprite and immediately exits
-    //    pendingAnimations.Add(SwapActiveCreatureAnimation(team, switchTo));
         
         if (team == 0)
         {
@@ -56,7 +53,10 @@ public class BattleUI : MonoBehaviour, IUI
             foreach(var swapButton in switchButtons) swapButton.HandleSwitchIn(switchTo);
         }
 
+        creatureP1.sprite = TurnManager.Instance.GetActiveCreature(0).state.definition.sprite;
+        creatureP2.sprite = TurnManager.Instance.GetActiveCreature(1).state.definition.sprite;
 
+        // TODO: move this stuff to SwapActiveCreatureAnimation, and queue it up in pendingAnimations
     }
 
     IEnumerator SwapActiveCreatureAnimation(int team, CreatureController switchTo)
@@ -79,7 +79,7 @@ public class BattleUI : MonoBehaviour, IUI
     {
         // TODO: make some coroutine that plays the damage effect and exits when the animation is over, and add it to pendingAnimations
     }
-
+     
     public void PlayStatBuffEffect(CreatureController beingBuffed, string statBeingBuffed, int buffLevel)
     {
         // TODO: make some coroutine that plays an animation for this effect and exits when the animation is over, and add it to pendingAnimations
@@ -214,6 +214,8 @@ public class BattleUI : MonoBehaviour, IUI
         isPlayingAnimation = false;
     }
 
+    public IEnumerator currentTurn;
+
     private void Update()
     {
         // play pending animations
@@ -234,12 +236,17 @@ public class BattleUI : MonoBehaviour, IUI
                 DisplaySwapMenu();
                 // TODO: disable the exit button
                 forceSwitchPendingP1 = false;
-            }
-            if (forceSwitchPendingP2)
+            } 
+            else if (forceSwitchPendingP2)
             {
                 DisplaySwapMenu();
                 // TODO: disable the exit button
                 forceSwitchPendingP2 = false;
+            } 
+            else if (currentTurn != null)
+            {
+                var nextActionExists = currentTurn.MoveNext();
+                if (!nextActionExists) currentTurn = null;
             }
         }
     }
