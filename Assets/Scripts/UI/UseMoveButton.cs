@@ -40,8 +40,7 @@ public class UseMoveButton : MonoBehaviour
         Sprite s = null;
 
         if (ui == null) ui = BattleUI.Instance;
-        
-        Debug.LogWarning($"Updating button color for move {creature.state.knownMoves[moveIndex].name} - type {creature.state.knownMoves[moveIndex].type}");
+
         switch(creature.state.knownMoves[moveIndex].type){
             case Move.Type.ATTACK: s = ui.MoveButton_AttackType; break;
             case Move.Type.DEFEND: s = ui.MoveButton_DefenseType; break;

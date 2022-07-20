@@ -188,11 +188,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
     
     public PlayerAction MakeSwitchAction(int playerNum, int switchToIndex)
     {
-        Debug.LogError($"making action {playerNum} : {switchToIndex}");
         PlayerController player = players[playerNum];
         PlayerAction action = player.MakeSwitchAction(switchToIndex);
-        Debug.LogWarning($"SWITCHING TO INDEX {switchToIndex}");
-        //SubmitPlayerAction(player, action);
         return action;
     }
 
@@ -200,7 +197,6 @@ public class TurnManager : MonoBehaviour, ITurnManager
     {
         PlayerController player = players[playerNum];
         PlayerAction action = player.MakeMoveAction(moveIndex, targetCreature);
-        //SubmitPlayerAction(player, action);
         return action;
     }
 
@@ -213,7 +209,6 @@ public class TurnManager : MonoBehaviour, ITurnManager
             return;
         }
 
-        Debug.LogWarning($"Player action queued (player {action.team+1})");
         action.speed = action.activeCreature.GetSpeed(currentState.fieldState, /*currentState.playersSideStates[action.team]*/ null);
         QueuePlayerAction(players[action.team], action);
     }
@@ -276,11 +271,6 @@ public class TurnManager : MonoBehaviour, ITurnManager
         foreach(PlayerController p in players) if (!nextTurnActions.ContainsKey(p)) return; // if not all players have picked an action for next turn, end the function
 
         BattleUI.Instance.currentTurn = RunTurn();
-
-        //RunTurn(nextTurnActions.Values.ToList());
-
-        //Debug.LogWarning("clearing next turn actions 1");
-        //nextTurnActions.Clear(); // this line of code is haunted, I don't know what to tell you. It runs without the above RunTurn() line running. Uncomment at your own peril, we will not send extortionists to save you.
     }
 
     public IEnumerator RunTurn()

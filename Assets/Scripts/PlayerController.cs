@@ -21,7 +21,7 @@ public class PlayerController
         else if (player1Lost)           { IUI.Instance.GameOver(ITurnManager.PLAYER_2); return; }
         else if (player2Lost)           { IUI.Instance.GameOver(ITurnManager.PLAYER_1); return; }
 
-
+        // regular forced switch
         pendingForcedSwitch = true;
         IUI.Instance.ForceSwitch(this.teamNumber); 
     }

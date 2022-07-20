@@ -47,16 +47,17 @@ public class BattleUI : MonoBehaviour, IUI
     public void SwapActiveCreature(int team, CreatureController switchTo)
     {
         
-        if (team == 0)
-        {
-            foreach(var moveButton in moveButtons) moveButton.HandleSwitchIn(switchTo);
-            foreach(var swapButton in switchButtons) swapButton.HandleSwitchIn(switchTo);
-        }
+        //if (team == 0)
+        //{
+        //    foreach(var moveButton in moveButtons) moveButton.HandleSwitchIn(switchTo);
+        //    foreach(var swapButton in switchButtons) swapButton.HandleSwitchIn(switchTo);
+        //}
 
-        creatureP1.sprite = TurnManager.Instance.GetActiveCreature(0).state.definition.sprite;
-        creatureP2.sprite = TurnManager.Instance.GetActiveCreature(1).state.definition.sprite;
+        //creatureP1.sprite = TurnManager.Instance.GetActiveCreature(0).state.definition.sprite;
+        //creatureP2.sprite = TurnManager.Instance.GetActiveCreature(1).state.definition.sprite;
 
         // TODO: move this stuff to SwapActiveCreatureAnimation, and queue it up in pendingAnimations
+        pendingAnimations.Add(SwapActiveCreatureAnimation(team, switchTo));
     }
 
     IEnumerator SwapActiveCreatureAnimation(int team, CreatureController switchTo)
@@ -69,7 +70,11 @@ public class BattleUI : MonoBehaviour, IUI
 
         // TODO: yield return wait for swap animation to complete
         // TODO: switch the sprite of team's creature
+        
+        creatureP1.sprite = TurnManager.Instance.GetActiveCreature(0).state.definition.sprite;
+        creatureP2.sprite = TurnManager.Instance.GetActiveCreature(1).state.definition.sprite;
 
+        yield return new WaitForSeconds(1);
 
         yield break;
     }
