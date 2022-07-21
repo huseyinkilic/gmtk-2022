@@ -414,9 +414,10 @@ public class TurnManager : MonoBehaviour, ITurnManager
             
             string effectivenessText = "";
             float matchup = GetMatchup(action.moveTaken.type, action.targetCreature.state.definition.type);
-            if (matchup > 1) effectivenessText = " It's super effective!";
-            if (matchup < 1) effectivenessText = " It's not very effective!";
-            ActionLogger.LogMessage($"{action.activeCreature.state.definition.name} hit its attack! It dealt {damage} damage to Player {action.targetCreature.state.team+1}'s {action.targetCreature.state.definition.name}.{effectivenessText}");
+            if (matchup > 1) effectivenessText = "It's super effective!";
+            if (matchup < 1) effectivenessText = "It's not very effective!";
+            if (damage > 0 && effectivenessText != "") ActionLogger.LogMessage(effectivenessText);
+            // if (damage > 0)   ActionLogger.LogMessage($"{action.activeCreature.state.definition.name} hit its attack! It dealt {damage} damage to Player {action.targetCreature.state.team+1}'s {action.targetCreature.state.definition.name}.{effectivenessText}");
             if (crit)         ActionLogger.LogMessage($"It's a critical hit!");
 
             if (!action.targetCreature.CanStillFight())

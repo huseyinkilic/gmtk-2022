@@ -102,7 +102,7 @@ public class CreatureController
     {
         state.currentDamage += damage;
         IUI.Instance.PlayDamageEffect(this);
-        ActionLogger.LogMessage($"Player {state.team+1}'s {state.definition.name} took {damage} damage!");
+        if (damage > 0) ActionLogger.LogMessage($"Player {state.team+1}'s {state.definition.name} took {damage} damage!");
     }
     
     public static float BuffLevelToMultiplier(int level)
