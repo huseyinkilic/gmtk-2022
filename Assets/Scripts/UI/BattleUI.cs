@@ -79,6 +79,8 @@ public class BattleUI : MonoBehaviour, IUI
         
         creatureP1.sprite = TurnManager.Instance.GetActiveCreature(0).state.definition.sprite;
         creatureP2.sprite = TurnManager.Instance.GetActiveCreature(1).state.definition.sprite;
+        creatureP1.SetNativeSize();
+        creatureP2.SetNativeSize();
         
         (team == 0 ? player1CreatureUI : player2CreatureUI).UpdateName();
         (team == 0 ? player1CreatureUI : player2CreatureUI).UpdateTargetHPInstantly();
@@ -171,6 +173,8 @@ public class BattleUI : MonoBehaviour, IUI
 
         creatureP1.sprite = TurnManager.Instance.GetActiveCreature(0).state.definition.sprite;
         creatureP2.sprite = TurnManager.Instance.GetActiveCreature(1).state.definition.sprite;
+        creatureP1.SetNativeSize();
+        creatureP2.SetNativeSize();
 
         // if there's an AI for either player, submit their move now
         if (player2AI != null)
