@@ -102,6 +102,11 @@ public class BattleUI : MonoBehaviour, IUI
         pendingAnimations.Add(PrintAndWait("damage animation"));
         (beingDamaged.state.team == 0 ? player1CreatureUI : player2CreatureUI).UpdateTargetHP();
     }
+
+    public void PlayMissedEffect(CreatureController attacker)
+    {
+        pendingAnimations.Add(PrintAndWait("missed attack animation"));
+    }
      
     public void PlayStatBuffEffect(CreatureController beingBuffed, string statBeingBuffed, int buffLevel)
     {

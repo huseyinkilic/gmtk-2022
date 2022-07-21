@@ -404,6 +404,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
             if (!moveHits) // move does not hit, skip damage calc and do not apply secondary effects
             {
                 ActionLogger.LogMessage($"{action.activeCreature.state.definition.name} missed its attack!");
+                BattleUI.Instance.PlayMissedEffect(action.activeCreature);
                 return;
             }
 

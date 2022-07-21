@@ -19,6 +19,7 @@ public interface IUI
     public void PlayDamageEffect(CreatureController beingDamaged); // update the HP bar, play special effect, etc. No delay between calls
     public void PlayStatBuffEffect(CreatureController beingBuffed, string statBeingBuffed, int buffLevel);
     public void PlayStatusEffectGainEffect(CreatureController creatureRecievingStatus, CreatureController.StatusContidion condition);
+    public void PlayMissedEffect(CreatureController attacker);
 
     //
     // Control flow changes
