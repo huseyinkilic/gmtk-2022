@@ -14,6 +14,8 @@ public class BattleUI : MonoBehaviour, IUI
     public GameObject swapUI;
     public GameObject statsUI;
 
+    public List<Button> mainMenuButtons;
+
     [HideInInspector] public IAI player2AI; // if player 2 is a human, leave null
     
     private List<IEnumerator> pendingAnimations = new();
@@ -22,6 +24,7 @@ public class BattleUI : MonoBehaviour, IUI
 
     private bool forceSwitchPendingP1 = false;
     private bool forceSwitchPendingP2 = false;
+    public Button switchMenuCloseButton;
 
     public Sprite MoveButton_AttackType;
     public Sprite MoveButton_DefenseType;
@@ -32,6 +35,9 @@ public class BattleUI : MonoBehaviour, IUI
 
     public Image creatureP1;
     public Image creatureP2;
+
+    public Thing player1CreatureUI;
+    public Thing player2CreatureUI;
 
     private void Awake()
     {
@@ -73,26 +79,41 @@ public class BattleUI : MonoBehaviour, IUI
         
         creatureP1.sprite = TurnManager.Instance.GetActiveCreature(0).state.definition.sprite;
         creatureP2.sprite = TurnManager.Instance.GetActiveCreature(1).state.definition.sprite;
+        
+        (team == 0 ? player1CreatureUI : player2CreatureUI).UpdateName();
+        (team == 0 ? player1CreatureUI : player2CreatureUI).UpdateTargetHPInstantly();
+        (team == 0 ? player1CreatureUI : player2CreatureUI).UpdateStatus();
 
         yield return new WaitForSeconds(1);
 
         yield break;
     }
 
+    IEnumerator PrintAndWait(string print) 
+    {
+        Debug.LogError(print);
+        yield return new WaitForSeconds(2);
+    }
+
     // update the HP bar, play special effect, etc. No delay between calls
     public void PlayDamageEffect(CreatureController beingDamaged)
     {
         // TODO: make some coroutine that plays the damage effect and exits when the animation is over, and add it to pendingAnimations
+        pendingAnimations.Add(PrintAndWait("damage animation"));
+        (beingDamaged.state.team == 0 ? player1CreatureUI : player2CreatureUI).UpdateTargetHP();
     }
      
     public void PlayStatBuffEffect(CreatureController beingBuffed, string statBeingBuffed, int buffLevel)
     {
         // TODO: make some coroutine that plays an animation for this effect and exits when the animation is over, and add it to pendingAnimations
+        pendingAnimations.Add(PrintAndWait("stat buff"));
     }
 
     public void PlayStatusEffectGainEffect(CreatureController creatureRecievingStatus, CreatureController.StatusContidion condition)
     {
         // TODO: make some coroutine that plays an animation for this effect and exits when the animation is over, and add it to pendingAnimations
+        pendingAnimations.Add(PrintAndWait("status gain"));
+        (creatureRecievingStatus.state.team == 0 ? player1CreatureUI : player2CreatureUI).UpdateStatus();
     }
 
     IEnumerator StatusEffectGainEffect(CreatureController creatureRecievingStatus, CreatureController.StatusContidion condition)
@@ -124,8 +145,6 @@ public class BattleUI : MonoBehaviour, IUI
         }
         else
         {
-            // TODO: open the switch menu and disable the close button
-            // TODO: wait for all pending animations to finish
             if (player == ITurnManager.PLAYER_1) forceSwitchPendingP1 = true;
             if (player == ITurnManager.PLAYER_2) forceSwitchPendingP2 = true;
         }
@@ -135,7 +154,10 @@ public class BattleUI : MonoBehaviour, IUI
     public void TurnManagerReadyToRecieveInput()
     {
         Debug.LogWarning("Turn manager is ready");
-        // the turn manager has 
+        // the turn manager has completed calculations and it's ready to recieve player input
+
+    
+        mainMenuButtons.ForEach(b => b.interactable = true);
 
         for(int q = 0; q < 3; q++)
         {
@@ -190,6 +212,8 @@ public class BattleUI : MonoBehaviour, IUI
         actionsUI.SetActive(false);
         swapUI.SetActive(true);
         statsUI.SetActive(false);
+
+        switchMenuCloseButton.interactable = !forceSwitchPendingP1; // this button should be disabled if forceSwitchPendingP1 is true
     }
 
     public void DisplayStats()
@@ -219,7 +243,13 @@ public class BattleUI : MonoBehaviour, IUI
         isPlayingAnimation = false;
     }
 
-    public IEnumerator currentTurn;
+    private IEnumerator currentTurn;
+
+    public void SetCurrentTurn(IEnumerator cTurn)
+    {
+        currentTurn = cTurn;
+        mainMenuButtons.ForEach(b => b.interactable = false);
+    }
 
     private void Update()
     {
@@ -239,13 +269,11 @@ public class BattleUI : MonoBehaviour, IUI
             if (forceSwitchPendingP1)
             {
                 DisplaySwapMenu();
-                // TODO: disable the exit button
                 forceSwitchPendingP1 = false;
             } 
             else if (forceSwitchPendingP2)
             {
                 DisplaySwapMenu();
-                // TODO: disable the exit button
                 forceSwitchPendingP2 = false;
             } 
             else if (currentTurn != null)

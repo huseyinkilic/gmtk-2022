@@ -270,7 +270,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
         foreach(PlayerController p in players) if (nextTurnActions.ContainsKey(p)) Debug.LogWarning($"\tPlayer {p.teamNumber+1} is ready...");
         foreach(PlayerController p in players) if (!nextTurnActions.ContainsKey(p)) return; // if not all players have picked an action for next turn, end the function
 
-        BattleUI.Instance.currentTurn = RunTurn();
+        BattleUI.Instance.SetCurrentTurn(RunTurn());
     }
 
     public IEnumerator RunTurn()
