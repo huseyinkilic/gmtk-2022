@@ -592,7 +592,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
                         default: return;
                     }
                     attackingCreature.state.currentType = t;
-                    ActionLogger.LogMessage($"Player {targetedCreature.state.team+1}'s {targetedCreature.state.definition.name}'s changed to type {typeName}!");
+                    ActionLogger.LogMessage($"Player {targetedCreature.state.team+1}'s {targetedCreature.state.definition.name} changed to the {typeName} type!");
                 };
             default: return null;
         }
