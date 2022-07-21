@@ -19,7 +19,13 @@ public class Thing : MonoBehaviour
 
     public void Update()
     {
-        hp.fillAmount += Mathf.Min(Mathf.Sign(targetHP - hp.fillAmount) * hpBarSpeed, targetHP - hp.fillAmount);   
+        float delta = targetHP - hp.fillAmount;
+        hp.fillAmount += Mathf.Sign(delta)*Mathf.Min(hpBarSpeed, Mathf.Abs(delta));   
+    }
+
+    public bool HPBarAnimationIsDone()
+    {
+        return Mathf.Abs(targetHP - hp.fillAmount) <= Mathf.Epsilon;
     }
 
     public void UpdateName()
