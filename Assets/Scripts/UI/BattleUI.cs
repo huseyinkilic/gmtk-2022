@@ -79,11 +79,12 @@ public class BattleUI : MonoBehaviour, IUI
     // Animation functions
     //
 
-    private IEnumerator WaitForAnimation(Animation animation, AnimationClip clip, bool setEnabled = false)
+    private IEnumerator WaitForAnimation(Animation animation, AnimationClip clip, bool setEnabled = false, string sfxClip = null)
     {
         Debug.LogError("PLAYING ANIMATION");
         if (setEnabled) animation.gameObject.SetActive(true);
 
+        if (sfxClip != null) SFXManager.Instance.Play(sfxClip);
         animation.clip = clip;
         animation.Play();
         yield return new WaitForSeconds(clip.length); //new WaitUntil(() => !animation.isPlaying);
@@ -169,6 +170,7 @@ public class BattleUI : MonoBehaviour, IUI
             Hop
         );
 
+        SFXManager.Instance.Play("GMTK_VGC SFX_DEBUFF7SCARYLOOK");
         yield return WaitForAnimation(
             (beingDamaged.state.team == 0 ? playerCreatureEffectsAnimation : opponentCreatureEffectsAnimation),
             damageClip
@@ -195,9 +197,9 @@ public class BattleUI : MonoBehaviour, IUI
         Animation animation = beingBuffed.state.team == 0 ? playerCreatureAnimation : opponentCreatureAnimation;
         switch(statBeingBuffed)
         {
-            case "ATTACK":  pendingAnimations.Add(WaitForAnimation(animation, buffLevel < 0 ? AttackDecreaseClip : AttackIncreaseClip)); break;
-            case "DEFENSE": pendingAnimations.Add(WaitForAnimation(animation, buffLevel < 0 ? DefenseDecreaseClip : DefenseIncreaseClip)); break;
-            case "SPEED":   pendingAnimations.Add(WaitForAnimation(animation, buffLevel < 0 ? SpeedDecreaseClip : SpeedIncreaseClip)); break;
+            case "ATTACK":  pendingAnimations.Add(WaitForAnimation(animation, buffLevel < 0 ? AttackDecreaseClip : AttackIncreaseClip  , false, buffLevel > 0 ? "GMTK_VGC GMTK_VGC SFX_BUFF4TOUGHENUP" : "GMTK_VGC SFX_DEBUFF0")); break;
+            case "DEFENSE": pendingAnimations.Add(WaitForAnimation(animation, buffLevel < 0 ? DefenseDecreaseClip : DefenseIncreaseClip, false, buffLevel > 0 ? "GMTK_VGC SFX_BUFF2THICKSKIN"          : "GMTK_VGC SFX_DEBUFF5SPORESOFWEAKNESS")); break;
+            case "SPEED":   pendingAnimations.Add(WaitForAnimation(animation, buffLevel < 0 ? SpeedDecreaseClip : SpeedIncreaseClip    , false, buffLevel > 0 ? "GMTK_VGC SFX_BUFF1"                   : "GMTK_VGC SFX_DEBUFF8SLOWBAITPOSE")); break;
         }
     }
 
@@ -213,10 +215,10 @@ public class BattleUI : MonoBehaviour, IUI
         AnimationClip p = null;
         switch (condition)
         {
-            case CreatureController.StatusContidion.BURN: p = burnClip; break;
-            case CreatureController.StatusContidion.SLEEP: p = sleepClip; break;
-            case CreatureController.StatusContidion.POISONED: p = poisonClip; break;
-            case CreatureController.StatusContidion.PARALYZED: p = paralysisClip; break;
+            case CreatureController.StatusContidion.BURN:      p = burnClip;      SFXManager.Instance.Play("GMTK_VGC SFX_DEBUFF0");          break;
+            case CreatureController.StatusContidion.SLEEP:     p = sleepClip;     SFXManager.Instance.Play("GMTK_VGC SFX_DEBUFF4ASLEEP");    break;
+            case CreatureController.StatusContidion.POISONED:  p = poisonClip;    SFXManager.Instance.Play("GMTK_VGC SFX_DEBUFF3POISONED");  break;
+            case CreatureController.StatusContidion.PARALYZED: p = paralysisClip; SFXManager.Instance.Play("GMTK_VGC SFX_DEBUFF1PARALYZED"); break;
         }
 
         if (p == null) yield break;
