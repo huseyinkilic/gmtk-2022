@@ -2932,7 +2932,7 @@ Animation:
   m_GameObject: {fileID: 683659879}
   m_Enabled: 1
   serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: b346c5d95cff0a54a85c607dcd7c4b2d, type: 2}
+  m_Animation: {fileID: 0}
   m_Animations:
   - {fileID: 7400000, guid: 4368495dd0eb4694f96b3ad9e3d01fdc, type: 2}
   - {fileID: 7400000, guid: bb305d735c2fd9a4c9a9e65f9f3c74d5, type: 2}
@@ -7520,7 +7520,7 @@ Animation:
   m_GameObject: {fileID: 1513036927}
   m_Enabled: 1
   serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: b346c5d95cff0a54a85c607dcd7c4b2d, type: 2}
+  m_Animation: {fileID: 0}
   m_Animations:
   - {fileID: 7400000, guid: 4368495dd0eb4694f96b3ad9e3d01fdc, type: 2}
   - {fileID: 7400000, guid: bb305d735c2fd9a4c9a9e65f9f3c74d5, type: 2}
@@ -8164,12 +8164,12 @@ MonoBehaviour:
   luckyRollAnimationClip: {fileID: 7400000, guid: 661a561da7340224894e7195c4616fcb, type: 2}
   playerCreatureAnimation: {fileID: 1513036931}
   opponentCreatureAnimation: {fileID: 683659883}
-  AttackIncreaseClip: {fileID: 7400000, guid: bb305d735c2fd9a4c9a9e65f9f3c74d5, type: 2}
-  AttackDecreaseClip: {fileID: 7400000, guid: 4368495dd0eb4694f96b3ad9e3d01fdc, type: 2}
-  DefenseIncreaseClip: {fileID: 7400000, guid: 4407c1dd16459d54b8b196f7aafadb6d, type: 2}
-  DefenseDecreaseClip: {fileID: 7400000, guid: b346c5d95cff0a54a85c607dcd7c4b2d, type: 2}
-  SpeedIncreaseClip: {fileID: 7400000, guid: c8775a0209085ff4789f2e6a634e4aa0, type: 2}
-  SpeedDecreaseClip: {fileID: 7400000, guid: 97db8d039f5be5d49b10e205e1fb1a4d, type: 2}
+  AttackIncreaseClip: {fileID: 7400000, guid: 4368495dd0eb4694f96b3ad9e3d01fdc, type: 2}
+  AttackDecreaseClip: {fileID: 7400000, guid: bb305d735c2fd9a4c9a9e65f9f3c74d5, type: 2}
+  DefenseIncreaseClip: {fileID: 7400000, guid: b346c5d95cff0a54a85c607dcd7c4b2d, type: 2}
+  DefenseDecreaseClip: {fileID: 7400000, guid: 4407c1dd16459d54b8b196f7aafadb6d, type: 2}
+  SpeedIncreaseClip: {fileID: 7400000, guid: 97db8d039f5be5d49b10e205e1fb1a4d, type: 2}
+  SpeedDecreaseClip: {fileID: 7400000, guid: c8775a0209085ff4789f2e6a634e4aa0, type: 2}
   SlideInLeft: {fileID: 7400000, guid: 956452544477e3a4c8f2dd244a21ec51, type: 2}
   SlideOutLeft: {fileID: 7400000, guid: 280419042664c9f42a6f0cb8a889a95c, type: 2}
   SlideInRight: {fileID: 7400000, guid: 4a09f3e0b6383234da20c13d7c0ccdf0, type: 2}

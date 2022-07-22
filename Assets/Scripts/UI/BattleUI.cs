@@ -92,21 +92,7 @@ public class BattleUI : MonoBehaviour, IUI
     }
 
     // change the sprite shown for "team" to the sprite corresponding to "switchTo"
-    public void SwapActiveCreature(int team, CreatureController switchTo)
-    {
-        
-        //if (team == 0)
-        //{
-        //    foreach(var moveButton in moveButtons) moveButton.HandleSwitchIn(switchTo);
-        //    foreach(var swapButton in switchButtons) swapButton.HandleSwitchIn(switchTo);
-        //}
-
-        //creatureP1.sprite = TurnManager.Instance.GetActiveCreature(0).state.definition.sprite;
-        //creatureP2.sprite = TurnManager.Instance.GetActiveCreature(1).state.definition.sprite;
-
-        // TODO: move this stuff to SwapActiveCreatureAnimation, and queue it up in pendingAnimations
-        pendingAnimations.Add(SwapActiveCreatureAnimation(team, switchTo));
-    }
+    public void SwapActiveCreature(int team, CreatureController switchTo) { pendingAnimations.Add(SwapActiveCreatureAnimation(team, switchTo)); }
 
     IEnumerator SwapActiveCreatureAnimation(int team, CreatureController switchTo)
     {
@@ -119,6 +105,14 @@ public class BattleUI : MonoBehaviour, IUI
         // TODO: yield return wait for swap animation to complete
         // TODO: switch the sprite of team's creature
         
+        Animation a = team == 0 ? playerCreatureAnimation : opponentCreatureAnimation;
+        AnimationClip slideIn = team == 0 ? SlideInLeft : SlideInRight;
+        AnimationClip slideOut = team == 0 ? SlideOutLeft : SlideOutRight;
+        
+        a.clip = slideOut;
+        a.Play();
+        yield return new WaitForSeconds(slideOut.length);
+
         creatureP1.sprite = TurnManager.Instance.GetActiveCreature(0).state.definition.sprite;
         creatureP2.sprite = TurnManager.Instance.GetActiveCreature(1).state.definition.sprite;
         creatureP1.SetNativeSize();
@@ -127,8 +121,10 @@ public class BattleUI : MonoBehaviour, IUI
         (team == 0 ? player1CreatureUI : player2CreatureUI).UpdateName();
         (team == 0 ? player1CreatureUI : player2CreatureUI).UpdateTargetHPInstantly();
         (team == 0 ? player1CreatureUI : player2CreatureUI).UpdateStatus();
-
-        yield return new WaitForSeconds(1);
+    
+        a.clip = slideIn;
+        a.Play();
+        yield return new WaitForSeconds(slideIn.length);
 
         yield break;
     }
@@ -156,6 +152,16 @@ public class BattleUI : MonoBehaviour, IUI
     {
         // TODO: make some coroutine that plays an animation for this effect and exits when the animation is over, and add it to pendingAnimations
         pendingAnimations.Add(PrintAndWait("stat buff"));
+
+        if (buffLevel == 0) return;
+
+        Animation animation = beingBuffed.state.team == 0 ? playerCreatureAnimation : opponentCreatureAnimation;
+        switch(statBeingBuffed)
+        {
+            case "ATTACK":  pendingAnimations.Add(WaitForAnimation(animation, buffLevel < 0 ? AttackDecreaseClip : AttackIncreaseClip)); break;
+            case "DEFENSE": pendingAnimations.Add(WaitForAnimation(animation, buffLevel < 0 ? DefenseDecreaseClip : DefenseIncreaseClip)); break;
+            case "SPEED":   pendingAnimations.Add(WaitForAnimation(animation, buffLevel < 0 ? SpeedDecreaseClip : SpeedIncreaseClip)); break;
+        }
     }
 
     public void PlayStatusEffectGainEffect(CreatureController creatureRecievingStatus, CreatureController.StatusContidion condition)
