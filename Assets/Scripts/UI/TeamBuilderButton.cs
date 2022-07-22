@@ -91,6 +91,8 @@ public class TeamBuilderButton : MonoBehaviour
     public bool included = false;
     public void OnClick()
     {
+        if (includedCreatures.Count >= 3 && !includedCreatures.Contains(creature)) return;
+
         included = !included;
         Background.color = included ? Color.gray : Color.white;
         
