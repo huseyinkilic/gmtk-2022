@@ -17,6 +17,13 @@ public class Thing : MonoBehaviour
     private float targetHP = 1;
     public int player;
 
+    //public void Start()
+    //{
+    //    UpdateName();
+    //    UpdateStatus();
+    //    UpdateTargetHPInstantly();
+    //}
+
     public void Update()
     {
         float delta = targetHP - hp.fillAmount;

@@ -68,6 +68,7 @@ public class TeamBuilderButton : MonoBehaviour
         nameText.text = creature.name;
 
         creaturePic.sprite = creature.sprite;
+        creaturePic.SetNativeSize();
     }
 
     Sprite GetSpriteForButton(Move.Type type)

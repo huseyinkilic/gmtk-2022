@@ -165,6 +165,22 @@ public class BattleUI : MonoBehaviour, IUI
         Debug.LogWarning("Turn manager is ready");
         // the turn manager has completed calculations and it's ready to recieve player input
 
+        if (TurnManager.Instance.currentState.turnNumber == 0)
+        {
+            // initialize
+            creatureP1.sprite = TurnManager.Instance.GetActiveCreature(0).state.definition.sprite;
+            creatureP2.sprite = TurnManager.Instance.GetActiveCreature(1).state.definition.sprite;
+            creatureP1.SetNativeSize();
+            creatureP2.SetNativeSize();
+        
+            player2CreatureUI.UpdateName();
+            player2CreatureUI.UpdateTargetHPInstantly();
+            player2CreatureUI.UpdateStatus();
+            player1CreatureUI.UpdateName();
+            player1CreatureUI.UpdateTargetHPInstantly();
+            player1CreatureUI.UpdateStatus();
+        }
+
     
         mainMenuButtons.ForEach(b => b.interactable = true);
 
