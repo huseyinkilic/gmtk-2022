@@ -192,6 +192,13 @@ public class BattleUI : MonoBehaviour, IUI
     // -1 means tie, 0 means player 1 won, 1 means player 2 won
     public void GameOver(int winningPlayer)
     {
+        pendingAnimations.Add(ShowEndScreen(winningPlayer));
+    }
+
+    IEnumerator ShowEndScreen(int winningPlayer)
+    {
+        yield return new WaitForSeconds(1);
+    
         ActionLogger.LogMessage($"Game over! Player {winningPlayer+1} won!");
         winCanvas.SetActive(winningPlayer == 0);
         loseCanvas.SetActive(winningPlayer != 0);
