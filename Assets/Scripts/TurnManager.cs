@@ -681,6 +681,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
         if (success) currentState.luckBalance -= relative*negativeOutcomeChance*luckFactor; // sway the luck in favor of the opposing team by the chance of thier desired outcome (which did not happen)
         else         currentState.luckBalance += relative*positiveOutcomeChance*luckFactor; // sway the luck in favor of this team by the chance of thier desired outcome (which did not happen)
 
+        BattleUI.Instance.UpdateLuckBar(currentState.luckBalance);
+
         return success;
     }
 
@@ -747,6 +749,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
         float singleDiceAverage = min + (max-min)/2f;
         float numDiceSides = max-min;
         currentState.luckBalance += relative*((singleDiceAverage-roll)/numDiceSides);
+    
+        BattleUI.Instance.UpdateLuckBar(currentState.luckBalance);
 
         return roll;
     }

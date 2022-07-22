@@ -39,6 +39,8 @@ public class BattleUI : MonoBehaviour, IUI
     public Thing player1CreatureUI;
     public Thing player2CreatureUI;
 
+    public LuckMeter luckMeter;
+
     private void Awake()
     {
         Instance = this;
@@ -291,5 +293,10 @@ public class BattleUI : MonoBehaviour, IUI
                 if (!nextActionExists) currentTurn = null;
             }
         }
+    }
+
+    public void UpdateLuckBar(float luckBalance)
+    {
+        luckMeter.targetLuck = luckBalance;
     }
 }
