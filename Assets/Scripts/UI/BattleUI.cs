@@ -41,6 +41,10 @@ public class BattleUI : MonoBehaviour, IUI
 
     public LuckMeter luckMeter;
 
+    // Animation clips
+
+    public Animation luckyRollAnimation;
+
     private void Awake()
     {
         Instance = this;
@@ -50,6 +54,22 @@ public class BattleUI : MonoBehaviour, IUI
     //
     // Animation functions
     //
+
+    private IEnumerator WaitForAnimation(Animation animation, bool setEnabled = false)
+    {
+        Debug.LogError("PLAYING ANIMATION");
+        if (setEnabled) animation.gameObject.SetActive(true);
+
+        animation.Play();
+        yield return new WaitUntil(() => !animation.isPlaying);
+
+        if (setEnabled) animation.gameObject.SetActive(false);
+    }
+
+    public void LuckyRoll()
+    {
+        pendingAnimations.Add(WaitForAnimation(luckyRollAnimation, true));
+    }
 
     // change the sprite shown for "team" to the sprite corresponding to "switchTo"
     public void SwapActiveCreature(int team, CreatureController switchTo)

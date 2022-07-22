@@ -665,6 +665,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
         // first, make a roll against the luck. if this succeeds, then the roll as a whole is considered successful
         if (Random.value < relative*currentState.luckBalance*luckFactor) success = true;
         if (success) ActionLogger.LogMessage($"LUCKY ROLL! Player {team+1}'s roll was an automatic success!");
+        if (success) BattleUI.Instance.LuckyRoll(); 
 
         // if the luck roll failed, roll against positiveOutcomeChance, if this succeeds, then the roll as a whole is considered successful
         if (Random.value < positiveOutcomeChance) success = true;
