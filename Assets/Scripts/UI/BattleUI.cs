@@ -60,6 +60,15 @@ public class BattleUI : MonoBehaviour, IUI
     public AnimationClip SlideOutRight;
     public AnimationClip Hop;
 
+    public Animation playerCreatureEffectsAnimation;
+    public Animation opponentCreatureEffectsAnimation;
+    public AnimationClip damageClip;
+    public AnimationClip poisonClip;
+    public AnimationClip paralysisClip;
+    public AnimationClip burnClip;
+    public AnimationClip sleepClip;
+
+
     private void Awake()
     {
         Instance = this;
@@ -151,14 +160,29 @@ public class BattleUI : MonoBehaviour, IUI
     // update the HP bar, play special effect, etc. No delay between calls
     public void PlayDamageEffect(CreatureController beingDamaged)
     {
-        // TODO: make some coroutine that plays the damage effect and exits when the animation is over, and add it to pendingAnimations
-        pendingAnimations.Add(PrintAndWait("damage animation"));
+        pendingAnimations.Add(AttackAnim(beingDamaged));   
+    }
+    IEnumerator AttackAnim(CreatureController beingDamaged)
+    {
+        yield return WaitForAnimation(
+            (beingDamaged.state.team == 0 ? opponentCreatureAnimation : playerCreatureAnimation),
+            Hop
+        );
+
+        yield return WaitForAnimation(
+            (beingDamaged.state.team == 0 ? playerCreatureEffectsAnimation : opponentCreatureEffectsAnimation),
+            damageClip
+        );
+
         (beingDamaged.state.team == 0 ? player1CreatureUI : player2CreatureUI).UpdateTargetHP();
     }
 
     public void PlayMissedEffect(CreatureController attacker)
     {
-        pendingAnimations.Add(PrintAndWait("missed attack animation"));
+        pendingAnimations.Add(WaitForAnimation(
+            (attacker.state.team == 0 ? playerCreatureAnimation : opponentCreatureAnimation),
+            Hop
+        ));
     }
      
     public void PlayStatBuffEffect(CreatureController beingBuffed, string statBeingBuffed, int buffLevel)
@@ -179,19 +203,25 @@ public class BattleUI : MonoBehaviour, IUI
 
     public void PlayStatusEffectGainEffect(CreatureController creatureRecievingStatus, CreatureController.StatusContidion condition)
     {
-        // TODO: make some coroutine that plays an animation for this effect and exits when the animation is over, and add it to pendingAnimations
-        pendingAnimations.Add(PrintAndWait("status gain"));
-        (creatureRecievingStatus.state.team == 0 ? player1CreatureUI : player2CreatureUI).UpdateStatus();
+        pendingAnimations.Add(StatusEffectGainEffect(creatureRecievingStatus, condition));
     }
 
     IEnumerator StatusEffectGainEffect(CreatureController creatureRecievingStatus, CreatureController.StatusContidion condition)
     {
-        // enable the correct status icon
+        Animation a = (creatureRecievingStatus.state.team == 0 ? playerCreatureEffectsAnimation : opponentCreatureAnimation);
+        AnimationClip p = null;
+        switch (condition)
+        {
+            case CreatureController.StatusContidion.BURN: p = burnClip; break;
+            case CreatureController.StatusContidion.SLEEP: p = sleepClip; break;
+            case CreatureController.StatusContidion.POISONED: p = poisonClip; break;
+            case CreatureController.StatusContidion.PARALYZED: p = paralysisClip; break;
+        }
 
-        // start the status effect animation
-        // yeild return wait until the animation is done
+        if (p == null) yield break;
 
-        yield break;
+        yield return WaitForAnimation(a, p);
+        (creatureRecievingStatus.state.team == 0 ? player1CreatureUI : player2CreatureUI).UpdateStatus();
     }
 
     //
