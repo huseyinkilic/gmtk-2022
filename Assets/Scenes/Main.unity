@@ -7564,9 +7564,10 @@ Animation:
   m_Enabled: 1
   serializedVersion: 3
   m_Animation: {fileID: 7400000, guid: 661a561da7340224894e7195c4616fcb, type: 2}
-  m_Animations: []
+  m_Animations:
+  - {fileID: 7400000, guid: 661a561da7340224894e7195c4616fcb, type: 2}
   m_WrapMode: 0
-  m_PlayAutomatically: 0
+  m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 0
 --- !u!1 &1742651167
@@ -8106,6 +8107,7 @@ MonoBehaviour:
   player2CreatureUI: {fileID: 1729882060}
   luckMeter: {fileID: 103355882}
   luckyRollAnimation: {fileID: 1733094734}
+  luckyRollAnimationClip: {fileID: 7400000, guid: 661a561da7340224894e7195c4616fcb, type: 2}
   winCanvas: {fileID: 679608211}
   loseCanvas: {fileID: 1868967617}
 --- !u!1 &1868967617 stripped

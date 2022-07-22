@@ -44,6 +44,7 @@ public class BattleUI : MonoBehaviour, IUI
     // Animation clips
 
     public Animation luckyRollAnimation;
+    public AnimationClip luckyRollAnimationClip;
 
     private void Awake()
     {
@@ -55,20 +56,25 @@ public class BattleUI : MonoBehaviour, IUI
     // Animation functions
     //
 
-    private IEnumerator WaitForAnimation(Animation animation, bool setEnabled = false)
+    private IEnumerator WaitForAnimation(Animation animation, AnimationClip clip, bool setEnabled = false)
     {
         Debug.LogError("PLAYING ANIMATION");
         if (setEnabled) animation.gameObject.SetActive(true);
 
+        animation.clip = clip;
         animation.Play();
-        yield return new WaitUntil(() => !animation.isPlaying);
+        yield return new WaitForSeconds(clip.length); //new WaitUntil(() => !animation.isPlaying);
 
         if (setEnabled) animation.gameObject.SetActive(false);
     }
-
+    
+    private int lastLuckyRollTurn = -1;
     public void LuckyRoll()
     {
-        pendingAnimations.Add(WaitForAnimation(luckyRollAnimation, true));
+        if (lastLuckyRollTurn == TurnManager.Instance.currentState.turnNumber) return;
+        lastLuckyRollTurn = TurnManager.Instance.currentState.turnNumber;
+
+        pendingAnimations.Add(WaitForAnimation(luckyRollAnimation, luckyRollAnimationClip, true));
     }
 
     // change the sprite shown for "team" to the sprite corresponding to "switchTo"
