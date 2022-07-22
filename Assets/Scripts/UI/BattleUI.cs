@@ -46,6 +46,20 @@ public class BattleUI : MonoBehaviour, IUI
     public Animation luckyRollAnimation;
     public AnimationClip luckyRollAnimationClip;
 
+    public Animation playerCreatureAnimation;
+    public Animation opponentCreatureAnimation;
+    public AnimationClip AttackIncreaseClip;
+    public AnimationClip AttackDecreaseClip;
+    public AnimationClip DefenseIncreaseClip;
+    public AnimationClip DefenseDecreaseClip;
+    public AnimationClip SpeedIncreaseClip;
+    public AnimationClip SpeedDecreaseClip;
+    public AnimationClip SlideInLeft;
+    public AnimationClip SlideOutLeft;
+    public AnimationClip SlideInRight;
+    public AnimationClip SlideOutRight;
+    public AnimationClip Hop;
+
     private void Awake()
     {
         Instance = this;
