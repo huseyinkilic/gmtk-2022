@@ -20,6 +20,6 @@ public class ImageSpriteRendererSync : MonoBehaviour
     void Update()
     {
         image.sprite = spriteRenderer.sprite;
-        image.enabled = spriteRenderer.sprite != null;
+        image.enabled = (spriteRenderer.sprite != null);
     }
 }
