@@ -208,6 +208,7 @@ public class BattleUI : MonoBehaviour, IUI
 
     IEnumerator StatusEffectGainEffect(CreatureController creatureRecievingStatus, CreatureController.StatusContidion condition)
     {
+        Debug.LogError("Playing status anim");
         Animation a = (creatureRecievingStatus.state.team == 0 ? playerCreatureEffectsAnimation : opponentCreatureAnimation);
         AnimationClip p = null;
         switch (condition)
