@@ -92,9 +92,19 @@ public class BattleUI : MonoBehaviour, IUI
     }
 
     // change the sprite shown for "team" to the sprite corresponding to "switchTo"
-    public void SwapActiveCreature(int team, CreatureController switchTo) { pendingAnimations.Add(SwapActiveCreatureAnimation(team, switchTo)); }
+    private CreatureController currentActiveForPlayer = null;
+    private CreatureController currentActiveForOpponent = null;
+    public void SwapActiveCreature(int team, CreatureController switchTo, bool isInit=false) 
+    { 
+        if (team == 0 ? (currentActiveForPlayer == switchTo) : (currentActiveForOpponent == switchTo)) return;
 
-    IEnumerator SwapActiveCreatureAnimation(int team, CreatureController switchTo)
+        if (team == 0) currentActiveForPlayer = switchTo;
+        if (team == 1) currentActiveForOpponent = switchTo;
+
+        pendingAnimations.Add(SwapActiveCreatureAnimation(team, switchTo, isInit)); 
+    }
+
+    IEnumerator SwapActiveCreatureAnimation(int team, CreatureController switchTo, bool isInit=false)
     {
         if (team == 0)
         {
@@ -109,9 +119,12 @@ public class BattleUI : MonoBehaviour, IUI
         AnimationClip slideIn = team == 0 ? SlideInLeft : SlideInRight;
         AnimationClip slideOut = team == 0 ? SlideOutLeft : SlideOutRight;
         
-        a.clip = slideOut;
-        a.Play();
-        yield return new WaitForSeconds(slideOut.length);
+        if (!isInit)
+        {
+            a.clip = slideOut;
+            a.Play();
+            yield return new WaitForSeconds(slideOut.length);
+        }
 
         creatureP1.sprite = TurnManager.Instance.GetActiveCreature(0).state.definition.sprite;
         creatureP2.sprite = TurnManager.Instance.GetActiveCreature(1).state.definition.sprite;

@@ -244,8 +244,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
         {
             IUI.Instance.TurnManagerReadyToRecieveInput();
             // "swap in" the players' starting creatures
-            BattleUI.Instance.SwapActiveCreature(0, players[0].team[0]);
-            BattleUI.Instance.SwapActiveCreature(1, players[1].team[0]);
+            BattleUI.Instance.SwapActiveCreature(0, players[0].team[0], true);
+            BattleUI.Instance.SwapActiveCreature(1, players[1].team[0], true);
         }
     }
 

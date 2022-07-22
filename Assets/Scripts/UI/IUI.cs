@@ -14,7 +14,7 @@ public interface IUI
     // Visual UI changes
     //
 
-    public void SwapActiveCreature(int team, CreatureController switchTo); // change the sprite shown for "team" to the sprite corresponding to "switchTo"
+    public void SwapActiveCreature(int team, CreatureController switchTo, bool isInit=false); // change the sprite shown for "team" to the sprite corresponding to "switchTo"
 
     public void PlayDamageEffect(CreatureController beingDamaged); // update the HP bar, play special effect, etc. No delay between calls
     public void PlayStatBuffEffect(CreatureController beingBuffed, string statBeingBuffed, int buffLevel);
