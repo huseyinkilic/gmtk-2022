@@ -375,6 +375,7 @@ public class TurnManager : MonoBehaviour, ITurnManager
 
             ApplySwapEffects(switchFrom, switchTo, currentState.fieldState, playerFieldSideState);
             IUI.Instance.SwapActiveCreature(player.teamNumber, switchTo);
+            ActionLogger.LogMessage($"Player {switchTo.state.team + 1} swapped to {switchTo.state.definition.name}");
         } 
         else
         {

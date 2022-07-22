@@ -83,8 +83,6 @@ public class BattleUI : MonoBehaviour, IUI
         creatureP2.sprite = TurnManager.Instance.GetActiveCreature(1).state.definition.sprite;
         creatureP1.SetNativeSize();
         creatureP2.SetNativeSize();
-        
-        ActionLogger.LogMessage($"Player {switchTo.state.team + 1} swapped to {switchTo.state.definition.name}");
 
         (team == 0 ? player1CreatureUI : player2CreatureUI).UpdateName();
         (team == 0 ? player1CreatureUI : player2CreatureUI).UpdateTargetHPInstantly();
