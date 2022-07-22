@@ -620,6 +620,7 @@ GameObject:
   - component: {fileID: 4419895111247125483}
   - component: {fileID: 4419895111247125484}
   - component: {fileID: 4419895111247125485}
+  - component: {fileID: 8447410191383463386}
   m_Layer: 5
   m_Name: Endscreen Canvas
   m_TagString: Untagged
@@ -724,6 +725,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &8447410191383463386
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4419895111247125486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89545f4cc00c1a3419947e44037bd0c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  themeName: 
 --- !u!1 &4419895111582194828
 GameObject:
   m_ObjectHideFlags: 0
