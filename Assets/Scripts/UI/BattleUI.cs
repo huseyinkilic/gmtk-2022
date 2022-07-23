@@ -183,12 +183,13 @@ public class BattleUI : MonoBehaviour, IUI
         );
 
         SFXManager.Instance.Play("GMTK_VGC SFX_DEBUFF7SCARYLOOK");
+        (beingDamaged.state.team == 0 ? player1CreatureUI : player2CreatureUI).UpdateTargetHP();
+
         var uiImageAnimator = (beingDamaged.state.team == 0 ? playerCreatureEffectsAnimation : opponentCreatureEffectsAnimation);
         uiImageAnimator.sprites = damageClip;
         uiImageAnimator.Play();
         yield return new WaitForSeconds(uiImageAnimator.duration);
 
-        (beingDamaged.state.team == 0 ? player1CreatureUI : player2CreatureUI).UpdateTargetHP();
     }
 
     public void PlayMissedEffect(CreatureController attacker)
