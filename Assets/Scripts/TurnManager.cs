@@ -379,14 +379,14 @@ public class TurnManager : MonoBehaviour, ITurnManager
         } 
         else
         {
-            ActionLogger.LogMessage($"Player {player.teamNumber + 1}'s {action.activeCreature.state.definition.name} used {action.moveTaken.name}");
-
             // move
             if (action.activeCreature.state.movesDisabled) // if the pokemon flinched or something
             { 
                 ActionLogger.LogMessage($"{action.activeCreature.state.definition.name} was unable to move!");
                 return; 
             } 
+
+            ActionLogger.LogMessage($"Player {player.teamNumber + 1}'s {action.activeCreature.state.definition.name} used {action.moveTaken.name}");
 
             // check to see if this move should be pending
             if (action.moveTaken.delayTurns > 0)

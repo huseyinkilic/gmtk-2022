@@ -60,14 +60,21 @@ public class BattleUI : MonoBehaviour, IUI
     public AnimationClip SlideOutRight;
     public AnimationClip Hop;
 
-    public Animation playerCreatureEffectsAnimation;
-    public Animation opponentCreatureEffectsAnimation;
-    public AnimationClip damageClip;
-    public AnimationClip poisonClip;
-    public AnimationClip paralysisClip;
-    public AnimationClip burnClip;
-    public AnimationClip sleepClip;
-
+    //public Animation playerCreatureEffectsAnimation;
+    //public Animation opponentCreatureEffectsAnimation;
+    //public AnimationClip damageClip;
+    //public AnimationClip poisonClip;
+    //public AnimationClip paralysisClip;
+    //public AnimationClip burnClip;
+    //public AnimationClip sleepClip;
+    
+    public UISpritesAnimation playerCreatureEffectsAnimation;
+    public UISpritesAnimation opponentCreatureEffectsAnimation;
+    public Sprite[] damageClip;
+    public Sprite[] poisonClip;
+    public Sprite[] paralysisClip;
+    public Sprite[] burnClip;
+    public Sprite[] sleepClip;
 
     private void Awake()
     {
@@ -176,10 +183,10 @@ public class BattleUI : MonoBehaviour, IUI
         );
 
         SFXManager.Instance.Play("GMTK_VGC SFX_DEBUFF7SCARYLOOK");
-        yield return WaitForAnimation(
-            (beingDamaged.state.team == 0 ? playerCreatureEffectsAnimation : opponentCreatureEffectsAnimation),
-            damageClip
-        );
+        var uiImageAnimator = (beingDamaged.state.team == 0 ? playerCreatureEffectsAnimation : opponentCreatureEffectsAnimation);
+        uiImageAnimator.sprites = damageClip;
+        uiImageAnimator.Play();
+        yield return new WaitForSeconds(uiImageAnimator.duration);
 
         (beingDamaged.state.team == 0 ? player1CreatureUI : player2CreatureUI).UpdateTargetHP();
     }
@@ -188,6 +195,13 @@ public class BattleUI : MonoBehaviour, IUI
     {
         pendingAnimations.Add(WaitForAnimation(
             (attacker.state.team == 0 ? playerCreatureAnimation : opponentCreatureAnimation),
+            Hop
+        ));
+    }
+    public void PlayNoDamageEffect(CreatureController target)
+    {
+        pendingAnimations.Add(WaitForAnimation(
+            (target.state.team == 0 ? opponentCreatureAnimation : playerCreatureAnimation),
             Hop
         ));
     }
@@ -216,8 +230,8 @@ public class BattleUI : MonoBehaviour, IUI
     IEnumerator StatusEffectGainEffect(CreatureController creatureRecievingStatus, CreatureController.StatusContidion condition)
     {
         Debug.LogError("Playing status anim");
-        Animation a = (creatureRecievingStatus.state.team == 0 ? playerCreatureEffectsAnimation : opponentCreatureAnimation);
-        AnimationClip p = null;
+        UISpritesAnimation a = (creatureRecievingStatus.state.team == 0 ? playerCreatureEffectsAnimation : opponentCreatureEffectsAnimation);
+        Sprite[] p = null;
         switch (condition)
         {
             case CreatureController.StatusContidion.BURN:      p = burnClip;      SFXManager.Instance.Play("GMTK_VGC SFX_DEBUFF0");          break;
@@ -228,7 +242,9 @@ public class BattleUI : MonoBehaviour, IUI
 
         if (p == null) yield break;
 
-        yield return WaitForAnimation(a, p);
+        a.sprites = p;
+        a.Play();
+        yield return new WaitForSeconds(a.duration);
         (creatureRecievingStatus.state.team == 0 ? player1CreatureUI : player2CreatureUI).UpdateStatus();
     }
 

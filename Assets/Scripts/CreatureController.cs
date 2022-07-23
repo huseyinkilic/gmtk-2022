@@ -95,13 +95,16 @@ public class CreatureController
         if (condition == StatusContidion.BURN) conditionMessage = "was burned";
         if (condition == StatusContidion.BURN) conditionMessage = "gained a status condition";
         ActionLogger.LogMessage($"Player {state.team+1}'s {state.definition.name} {conditionMessage}!");
+
+        ApplyStartOfTurnEffects();
     }
 
     public void TakeDamage(float damage) { TakeDamage(Mathf.FloorToInt(damage)); }
     public void TakeDamage(int damage)
     {
         state.currentDamage += damage;
-        IUI.Instance.PlayDamageEffect(this);
+        if (damage > 0)  IUI.Instance.PlayDamageEffect(this);
+        if (damage == 0) BattleUI.Instance.PlayNoDamageEffect(this);
         if (damage > 0) ActionLogger.LogMessage($"Player {state.team+1}'s {state.definition.name} took {damage} damage!");
     }
     
