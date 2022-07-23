@@ -475,6 +475,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
                     int healFor = Mathf.FloorToInt(attackingCreature.state.definition.hp*percentageRolled);
                     attackingCreature.TakeDamage(-healFor);
 
+                    BattleUI.Instance.CreatureHeal(attackingCreature);
+
                     ActionLogger.LogMessage($"Player {attackingCreature.state.team+1}'s {attackingCreature.state.definition.name} healed {healFor} hp!");
                 };
             case "heal_value": // params: successChance, minValue, maxValue
@@ -490,6 +492,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
                     int valueRolled = MakeDiceRoll(attackingCreature.state.team, minValue, maxValue);
                     attackingCreature.TakeDamage(-valueRolled);
                     
+                    BattleUI.Instance.CreatureHeal(attackingCreature);
+
                     ActionLogger.LogMessage($"Player {attackingCreature.state.team+1}'s {attackingCreature.state.definition.name} healed {valueRolled} hp!");
                 };
             case "heal_damage_dealt": // params: percentageOfDamageDealtConvertedToHP
@@ -499,6 +503,8 @@ public class TurnManager : MonoBehaviour, ITurnManager
                     int healFor = Mathf.FloorToInt(damageDealt*percentageOfDamageDealtConvertedToHP);
                     attackingCreature.TakeDamage(-healFor);
                     
+                    BattleUI.Instance.CreatureHeal(attackingCreature);
+
                     ActionLogger.LogMessage($"Player {attackingCreature.state.team+1}'s {attackingCreature.state.definition.name} healed {healFor} hp!");
                 };
             case "self_stat_buff": // params: successChance, stat name, magnitude of buff (can be negative)

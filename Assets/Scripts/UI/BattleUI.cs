@@ -101,6 +101,11 @@ public class BattleUI : MonoBehaviour, IUI
         pendingAnimations.Add(WaitForAnimation(luckyRollAnimation, luckyRollAnimationClip, true));
     }
 
+    public void CreatureHeal(CreatureController attackingCreature)
+    {
+        pendingAnimations.Add(WaitForAnimation((attackingCreature.state.team == 0 ? playerCreatureAnimation : opponentCreatureAnimation), Hop, false, "GMTK_VGC SFX_BUFF3DELAYEDREGEN"));
+    }
+
     // change the sprite shown for "team" to the sprite corresponding to "switchTo"
     private CreatureController currentActiveForPlayer = null;
     private CreatureController currentActiveForOpponent = null;
